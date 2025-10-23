@@ -1,87 +1,229 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=IM+Fell+DW+Pica&display=swap');
+
 .admin-wrap {
-    min-height: 100vh;
-    background-color: var(--surface-alt);
-    display: flex;
-    align-items: center;
+    /* 비워둠 */
+}
 
-    .inner {
-        background-color: var(--bg);
-        padding: 3rem;
-        border-radius: var(--radius-l);
-        text-align: left;
+.inner {
+    position: relative; 
+    
+    // 🚨 (수정) 크기 확대 (약 110%)
+    width: 800px;  // 900px -> 1000px
+    height: 700px; // 600px -> 667px (비율 유지)
+    
+    background-color: transparent; 
+    background-image: url('../assets/grimoire_form_overlay.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    
+    // 🚨 (신규) 경계를 흐리게 하는 그림자 효과 추가
+    // 그림자 색상(rgba(0,0,0,0.4)), 확산 반경(30px), 흐림 반경(20px)
+    box-shadow: 0 0 30px 20px rgba(0, 0, 0, 0.4);
 
-        .admin-head {
-            text-align: center;
+    /* 🚨 (신규) 로그인/회원가입 탭 */
+    .grimoire-tabs {
+        position: absolute;
+        top: 130px; // (정밀 조정 필요)
+        left: 50px; // (정밀 조정 필요)
+        width: 320px;
+        display: flex;
+        gap: .8rem;
+        
+        button {
+            flex: 1;
+            background: transparent;
+            color: #6b4f44;
+            border: none;
+            border-bottom: 2px solid transparent;
+            padding: 1rem 0;
+            font-size: 1.6rem;
+            font-family: 'IM Fell DW Pica', serif;
+            cursor: pointer;
 
-            p {
-                color: var(--muted);
-                margin: .8rem 0 1.6rem;
+            &:hover {
+                transform: none;
+                color: #3a2e28;
+            }
+            &.on {
+                color: #3a2e28;
+                border-bottom: 2px solid #5d4037;
+                font-weight: bold;
             }
         }
+    }
 
-        .admin-card {
-            background-color: var(--bg);
-            border: .1rem solid var(--border);
-            border-radius: var(--radius-l);
-            box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.04);
-            padding: 2.4rem;
-            text-align: left;
-            margin: 2.4rem auto;
+    .admin-head {
+        position: absolute;
+        top: 70px; 
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        text-align: center;
 
-            .auth-row {
-                display: flex;
-                flex-wrap: wrap;
-                align-items: center;
-                gap: .8rem 1.2rem;
+        .title {
+            font-family: 'Cinzel', serif;
+            font-size: 32px;
+            color: #e0d0b0;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+    }
 
-                .auth-actions {
-                    display: flex;
-                    gap: .8rem;
+    .auth-area {
+        position: absolute; 
+        width: 320px; 
+        
+        &.pre-auth {
+            top: 180px; // 탭 아래로 이동 (정밀 조정 필요)
+            left: 50px; 
+
+            /* 🚨 (신규) 실제 입력창 스타일 */
+            .input-group {
+                margin-bottom: 15px; // 간격 조정
+                text-align: left;
+                
+                label {
+                    font-size: 14px;
+                    color: #bfae95;
+                    letter-spacing: 1px;
+                    display: block;
+                    margin-bottom: 5px;
                 }
 
-                .badge {
-                    display: inline-flex;
-                    align-items: center;
-                    padding: .3rem .8rem;
-                    border-radius: 5rem;
+                input {
+                    width: 100%;
+                    background: transparent;
+                    border: none;
+                    border-bottom: 1px solid #bfae95;
+                    color: #f0e6d8;
+                    font-size: 18px;
+                    padding: 8px 5px; // 패딩 조정
+                    font-family: 'IM Fell DW Pica', serif;
+
+                    &::placeholder {
+                        color: #8d6e63;
+                        font-style: italic;
+                    }
+                    &:focus {
+                        outline: none;
+                        border-bottom: 1px solid #d9c5a9;
+                    }
+                }
+
+                // 닉네임 입력창 위치 (정밀 조정 필요)
+                &.display-name-input {
+                    margin-bottom: 20px;
+                }
+            }
+
+            .btn-grimoire-seal {
+                position: absolute;
+                // (정밀 조정 필요) 우측 페이지 왁스 봉인 위치
+                top: 110px; 
+                left: 460px; 
+                
+                background: url('../assets/grimoire_seal_normal.png') no-repeat center center;
+                background-size: contain;
+                border: none;
+                width: 100px;
+                height: 100px;
+                padding: 0;
+                cursor: pointer;
+                transition: background-image 0.2s ease, transform 0.2s ease;
+                
+                &:hover {
+                    background-image: url('../assets/grimoire_seal_hover.png');
+                    transform: scale(1.05); 
+                }
+                &:active {
+                    transform: scale(0.95); 
+                }
+                &:disabled {
+                    cursor: not-allowed;
+                    opacity: 0.7;
+                    transform: none;
+                    background-image: url('../assets/grimoire_seal_normal.png');
+                }
+
+                span { // 로딩 텍스트
+                    font-family: sans-serif;
+                    color: white;
                     font-size: 1.2rem;
-                    border: .1rem solid;
-
-                    &-ok {
-                        background-color: #ecfdf5;
-                        color: #065f46;
-                        border-color: #a7f3d0;
-                    }
-
-                    &-warn {
-                        background: #fff7ed;
-                        /* 주황 톤 */
-                        color: #9a3412;
-                        border-color: #fed7aa;
-                    }
+                    background: rgba(0,0,0,0.5);
+                    padding: 2px 4px;
+                    border-radius: 3px;
                 }
-
-            }
-
-            .alert {
-                margin-top: 1rem;
-                padding: 1rem 1.2rem;
-                border-radius: var(--radius-s);
-                border: .1rem solid;
-                font-size: 1.4rem;
-
-                &-warn {
-                    background: #fff7ed;
-                    /* 주황 톤 */
-                    color: #9a3412;
-                    border-color: #fed7aa;
-                }
-            }
-
-            .code {
-                margin-top: 1.6rem;
             }
         }
 
+        &.post-auth {
+            // (기존과 동일)
+            width: 320px; 
+            top: 250px;
+            right: 50px; 
+            /* ... */
+        }
+    }
+
+    /* 🚨 (신규) 에러 메시지 영역 */
+    .grimoire-messages {
+        position: absolute;
+        bottom: 90px;
+        left: 50px; 
+        width: 320px;
+        text-align: center;
+        font-family: sans-serif; 
+        font-size: 1.3rem;
+
+        .am-msg {
+            padding: 0.8rem 1rem;
+            border-radius: var(--radius-s);
+            border: .1rem solid;
+            margin-bottom: 0.5rem;
+
+            &.error,
+            &.warn {
+                background: rgba(251, 146, 60, 0.2);
+                color: #fed7aa;
+                border-color: #fb923c;
+            }
+        }
+        .am-subtle {
+            font-size: 1.2rem;
+            color: #bfae95;
+        }
+    }
+
+    .alert-warn {
+        // (기존 스타일 재사용 및 테마 적용)
+        margin: 0; 
+        padding: 1rem 1.2rem;
+        border-radius: var(--radius-s);
+        border: .1rem solid;
+        font-size: 1.4rem;
+        position: absolute; 
+        bottom: 70px; 
+        left: 50%;
+        transform: translateX(-50%);
+        width: 450px;
+        background: rgba(251, 146, 60, 0.2);
+        color: #fed7aa;
+        border-color: #fb923c;
+        font-family: sans-serif;
+    }
+
+    .code {
+        // (기존 스타일 재사용 및 테마 적용)
+        margin: 0;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 10px;
+        max-height: 100px;
+        overflow: auto;
+        position: absolute; 
+        bottom: 10px;
+        left: 10px;
+        max-width: 200px;
     }
 }

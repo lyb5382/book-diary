@@ -1,6 +1,6 @@
 import './App.scss'
 import { useState, useEffect } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import AuthPanel from './components/AuthPanel'
 import Landing from './pages/Landing'
 import Header from './components/Header'
@@ -17,6 +17,7 @@ function App() {
   const location = useLocation()
   const [token, setToken] = useState(() => localStorage.getItem('token'))
   const [me, setMe] = useState(null)
+  const isLoginPage = location.pathname === '/admin/login'
   const isAuthed = !!token
   const hideOn = new Set(['/', '/admin/login'])
   const showHeader = isAuthed && !hideOn.has(location.pathname)
@@ -56,7 +57,7 @@ function App() {
   }, [isAuthed])
 
   return (
-    <div className='page'>
+    <div className={isLoginPage ? 'page-login' : 'page'}>
       {showHeader && <Header
         isAuthed={isAuthed}
         user={user}
