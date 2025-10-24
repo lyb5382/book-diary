@@ -1,53 +1,58 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=IM+Fell+DW+Pica&display=swap');
 
-.admin-wrap {
-    /* 비워둠 */
-}
-
 .inner {
-    position: relative; 
-    
+    position: relative;
+
     // 🚨 (수정) 크기 확대 (약 110%)
-    width: 800px;  // 900px -> 1000px
-    height: 700px; // 600px -> 667px (비율 유지)
-    
-    background-color: transparent; 
+    width: 80rem; // 900px -> 1000px
+    height: 70rem; // 600px -> 667px (비율 유지)
+
+    background-color: transparent;
     background-image: url('../assets/grimoire_form_overlay.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    
+
     // 🚨 (신규) 경계를 흐리게 하는 그림자 효과 추가
     // 그림자 색상(rgba(0,0,0,0.4)), 확산 반경(30px), 흐림 반경(20px)
-    box-shadow: 0 0 30px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 3rem 2rem rgba(0, 0, 0, 0.4);
 
     /* 🚨 (신규) 로그인/회원가입 탭 */
     .grimoire-tabs {
         position: absolute;
-        top: 130px; // (정밀 조정 필요)
-        left: 50px; // (정밀 조정 필요)
-        width: 320px;
+        top: 21%;
+        left: 5.5%;
+        width: 36%;
         display: flex;
         gap: .8rem;
-        
+
+        // 🚨 (신규) 반투명 배경 및 패딩 추가
+        background-color: rgba(247, 243, 232, 0.1); // 매우 옅은 양피지 색 (투명도 10%)
+        padding: 0.5rem 1rem; // 내부 여백
+        border-radius: 0.3rem 0.3rem 0 0; // rem 단위 radius
+        border-bottom: 0.1rem solid rgba(93, 64, 55, 0.3);
+
         button {
             flex: 1;
             background: transparent;
-            color: #6b4f44;
+            // 🚨 (수정) 텍스트 색상을 약간 더 진하게
+            color: #5d4037;
             border: none;
-            border-bottom: 2px solid transparent;
-            padding: 1rem 0;
+            border-bottom: .2rem solid transparent;
+            padding: 0.5rem 0; // 패딩 조정
             font-size: 1.6rem;
             font-family: 'IM Fell DW Pica', serif;
             cursor: pointer;
+            text-shadow: .1rem .1rem .2rem rgba(255, 255, 255, 0.3); // 밝은 그림자 추가
 
             &:hover {
                 transform: none;
                 color: #3a2e28;
             }
+
             &.on {
                 color: #3a2e28;
-                border-bottom: 2px solid #5d4037;
+                border-bottom: .2rem solid #5d4037;
                 font-weight: bold;
             }
         }
@@ -55,7 +60,7 @@
 
     .admin-head {
         position: absolute;
-        top: 70px; 
+        top: 11%;
         left: 50%;
         transform: translateX(-50%);
         width: 100%;
@@ -63,81 +68,96 @@
 
         .title {
             font-family: 'Cinzel', serif;
-            font-size: 32px;
+            font-size: 3.2rem;
             color: #e0d0b0;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+            text-shadow: .2rem .2rem .5rem rgba(0, 0, 0, 0.5);
         }
     }
 
     .auth-area {
-        position: absolute; 
-        width: 320px; 
-        
-        &.pre-auth {
-            top: 180px; // 탭 아래로 이동 (정밀 조정 필요)
-            left: 50px; 
+        position: absolute;
+        width: 32rem;
 
-            /* 🚨 (신규) 실제 입력창 스타일 */
+        &.pre-auth {
+            // 🚨 (신규) 반투명 배경 및 패딩 추가
+            background-color: rgba(247, 243, 232, 0.1); // 탭과 동일한 배경 (투명도 10%)
+            padding: 2rem 1.5rem; // 내부 여백
+            border-radius: 0 0 .3rem .3rem; // 아래쪽 모서리 둥글게
+
+            width: 36%; // 탭과 동일 너비
+            top: 29%; // 탭 바로 아래
+            left: 5.5%;
+            // 🚨 width, top, left 재조정 (탭과 맞춤)
+
             .input-group {
-                margin-bottom: 15px; // 간격 조정
+                margin-bottom: 3%; // % 단위 간격
                 text-align: left;
-                
+
                 label {
-                    font-size: 14px;
-                    color: #bfae95;
-                    letter-spacing: 1px;
+                    font-size: 1.4rem; // 크기 살짝 키움
+                    // 🚨 (수정) 라벨 색상 더 진하게
+                    color: #8d6e63;
+                    letter-spacing: .1rem; // rem 단위 spacing
                     display: block;
-                    margin-bottom: 5px;
+                    margin-bottom: .5rem; // rem 단위 margin
+                    text-shadow: .1rem .1rem .1rem rgba(255, 255, 255, 0.2); // 밝은 그림자
                 }
 
                 input {
                     width: 100%;
                     background: transparent;
                     border: none;
-                    border-bottom: 1px solid #bfae95;
-                    color: #f0e6d8;
-                    font-size: 18px;
-                    padding: 8px 5px; // 패딩 조정
+                    border-bottom: .1rem solid #bfae95;
+                    // 🚨 (수정) 입력 텍스트 색상 더 밝게
+                    color: #fff;
+                    font-size: 1.6rem; // 크기 살짝 키움
+                    padding: .8rem .5rem;
                     font-family: 'IM Fell DW Pica', serif;
+                    text-shadow: .1rem .1rem .2rem rgba(0, 0, 0, 0.5); // 어두운 그림자
 
                     &::placeholder {
-                        color: #8d6e63;
+                        color: #bfae95; // placeholder 색상 조정
                         font-style: italic;
                     }
+
                     &:focus {
                         outline: none;
-                        border-bottom: 1px solid #d9c5a9;
+                        border-bottom: .1rem solid #d9c5a9;
                     }
                 }
 
                 // 닉네임 입력창 위치 (정밀 조정 필요)
                 &.display-name-input {
-                    margin-bottom: 20px;
+                    margin-bottom: 2rem;
                 }
             }
 
             .btn-grimoire-seal {
                 position: absolute;
                 // (정밀 조정 필요) 우측 페이지 왁스 봉인 위치
-                top: 110px; 
-                left: 460px; 
-                
+                top: -5%; // .inner 높이의 48% 지점
+                left: 147%; // .inner 너비의 59% 지점
+                width: 30%; // .inner 너비의 11%
+                height: 30%; // .inner 높이의 17%
+
                 background: url('../assets/grimoire_seal_normal.png') no-repeat center center;
                 background-size: contain;
                 border: none;
-                width: 100px;
-                height: 100px;
+                width: 15rem;
+                height: 15rem;
                 padding: 0;
                 cursor: pointer;
                 transition: background-image 0.2s ease, transform 0.2s ease;
-                
+
                 &:hover {
                     background-image: url('../assets/grimoire_seal_hover.png');
-                    transform: scale(1.05); 
+                    transform: scale(1.05);
                 }
+
                 &:active {
-                    transform: scale(0.95); 
+                    transform: scale(0.95);
                 }
+
                 &:disabled {
                     cursor: not-allowed;
                     opacity: 0.7;
@@ -145,22 +165,24 @@
                     background-image: url('../assets/grimoire_seal_normal.png');
                 }
 
-                span { // 로딩 텍스트
+                span {
+                    // 로딩 텍스트
                     font-family: sans-serif;
                     color: white;
                     font-size: 1.2rem;
-                    background: rgba(0,0,0,0.5);
-                    padding: 2px 4px;
-                    border-radius: 3px;
+                    background: rgba(0, 0, 0, 0.5);
+                    padding: .2rem .4rem; // rem 단위 padding
+                    border-radius: .3rem; // rem 단위 radius
                 }
             }
         }
 
         &.post-auth {
             // (기존과 동일)
-            width: 320px; 
-            top: 250px;
-            right: 50px; 
+            width: 36%;
+            top: 38%;
+            right: 5.5%;
+            text-align: center;
             /* ... */
         }
     }
@@ -168,18 +190,18 @@
     /* 🚨 (신규) 에러 메시지 영역 */
     .grimoire-messages {
         position: absolute;
-        bottom: 90px;
-        left: 50px; 
-        width: 320px;
+        bottom: 14%;
+        left: 5.5%;
+        width: 36%;
         text-align: center;
-        font-family: sans-serif; 
+        font-family: sans-serif;
         font-size: 1.3rem;
 
         .am-msg {
-            padding: 0.8rem 1rem;
+            padding: .8rem 1rem;
             border-radius: var(--radius-s);
             border: .1rem solid;
-            margin-bottom: 0.5rem;
+            margin-bottom: .5rem;
 
             &.error,
             &.warn {
@@ -188,6 +210,7 @@
                 border-color: #fb923c;
             }
         }
+
         .am-subtle {
             font-size: 1.2rem;
             color: #bfae95;
@@ -196,16 +219,16 @@
 
     .alert-warn {
         // (기존 스타일 재사용 및 테마 적용)
-        margin: 0; 
+        margin: 0;
         padding: 1rem 1.2rem;
         border-radius: var(--radius-s);
         border: .1rem solid;
         font-size: 1.4rem;
-        position: absolute; 
-        bottom: 70px; 
+        position: absolute;
+        bottom: 10%;
         left: 50%;
         transform: translateX(-50%);
-        width: 450px;
+        width: 50%; // 너비 조정
         background: rgba(251, 146, 60, 0.2);
         color: #fed7aa;
         border-color: #fb923c;
@@ -216,14 +239,15 @@
         // (기존 스타일 재사용 및 테마 적용)
         margin: 0;
         background: rgba(0, 0, 0, 0.5);
-        padding: 10px;
-        border-radius: 5px;
-        font-size: 10px;
-        max-height: 100px;
+        padding: 1rem; // rem 단위 padding (10px -> 1rem)
+        border-radius: .5rem; // rem 단위 radius (5px -> 0.5rem)
+        font-size: 1rem; // rem 단위 font-size (10px -> 1rem)
+        max-height: 10rem; // rem 단위 height (100px -> 10rem)
         overflow: auto;
-        position: absolute; 
-        bottom: 10px;
-        left: 10px;
-        max-width: 200px;
+        position: absolute;
+        // % 단위 유지 (비율 기반 위치/크기)
+        bottom: 2%;
+        left: 2%;
+        max-width: 25%;
     }
 }

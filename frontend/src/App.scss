@@ -16,3 +16,20 @@
         margin: 0 2rem;
     }
 }
+
+.page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    background-image: url('../src/assets/main_bg.png');
+    background-color: black;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: top;
+    // filter: blur(5px) brightness(0.8);
+    // opacity: 0.9;
+}
