@@ -7,7 +7,7 @@ const Landing = () => {
         <section className="landing">
             <div className="container">
                 <div className="landing-hero">
-                    <h1>📖 Book Diary</h1>
+                    <h1>📜 Book Diary</h1>
                     <p className="landing-sub">사진 한 장, 한 줄 메모. 태그 · 검색 · 공유까지.</p>
                     <Link to="/admin/login" className="btn btn-primary">시작하기</Link>
                 </div>

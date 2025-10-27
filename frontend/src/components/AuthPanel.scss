@@ -15,7 +15,7 @@
 
     // 🚨 (신규) 경계를 흐리게 하는 그림자 효과 추가
     // 그림자 색상(rgba(0,0,0,0.4)), 확산 반경(30px), 흐림 반경(20px)
-    box-shadow: 0 0 3rem 2rem rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 0 5rem 4rem rgba(0, 0, 0, 0.6);
 
     /* 🚨 (신규) 로그인/회원가입 탭 */
     .grimoire-tabs {
@@ -24,35 +24,35 @@
         left: 5.5%;
         width: 36%;
         display: flex;
-        gap: .8rem;
+        gap: 0.8rem;
 
-        // 🚨 (신규) 반투명 배경 및 패딩 추가
-        background-color: rgba(247, 243, 232, 0.1); // 매우 옅은 양피지 색 (투명도 10%)
-        padding: 0.5rem 1rem; // 내부 여백
-        border-radius: 0.3rem 0.3rem 0 0; // rem 단위 radius
-        border-bottom: 0.1rem solid rgba(93, 64, 55, 0.3);
+        // 🚨 (수정) 불투명 양피지 배경색 적용
+        background-color: #f7f3e8af; // 불투명 양피지 색
+        padding: 0.5rem 1rem;
+        border-radius: 0.3rem 0.3rem 0 0;
+        border-bottom: 0.1rem solid #d7ccc8; // 구분선 색상 조정 (B0BEC5 -> d7ccc8, Brown Grey 100)
 
         button {
             flex: 1;
             background: transparent;
-            // 🚨 (수정) 텍스트 색상을 약간 더 진하게
+            // 🚨 (수정) 텍스트 색상을 어두운 갈색으로
             color: #5d4037;
             border: none;
-            border-bottom: .2rem solid transparent;
-            padding: 0.5rem 0; // 패딩 조정
+            border-bottom: 0.2rem solid transparent;
+            padding: 0.5rem 0;
             font-size: 1.6rem;
             font-family: 'IM Fell DW Pica', serif;
             cursor: pointer;
-            text-shadow: .1rem .1rem .2rem rgba(255, 255, 255, 0.3); // 밝은 그림자 추가
+            text-shadow: none; // 그림자 제거 (불투명 배경이므로 불필요)
 
             &:hover {
                 transform: none;
-                color: #3a2e28;
+                color: #3e2723; // 호버 시 더 진하게
             }
 
             &.on {
-                color: #3a2e28;
-                border-bottom: .2rem solid #5d4037;
+                color: #3e2723; // 활성 탭 색상
+                border-bottom: 0.2rem solid #5d4037;
                 font-weight: bold;
             }
         }
@@ -76,53 +76,51 @@
 
     .auth-area {
         position: absolute;
-        width: 32rem;
 
         &.pre-auth {
-            // 🚨 (신규) 반투명 배경 및 패딩 추가
-            background-color: rgba(247, 243, 232, 0.1); // 탭과 동일한 배경 (투명도 10%)
-            padding: 2rem 1.5rem; // 내부 여백
-            border-radius: 0 0 .3rem .3rem; // 아래쪽 모서리 둥글게
+            // 🚨 (수정) 불투명 양피지 배경색 적용
+            background-color: #f7f3e8e0; // 탭과 동일한 불투명 배경
+            padding: 2rem 1.5rem;
+            border-radius: 0 0 0.3rem 0.3rem;
 
-            width: 36%; // 탭과 동일 너비
-            top: 29%; // 탭 바로 아래
+            width: 36%;
+            top: 29%;
             left: 5.5%;
-            // 🚨 width, top, left 재조정 (탭과 맞춤)
 
             .input-group {
-                margin-bottom: 3%; // % 단위 간격
+                margin-bottom: 3%;
                 text-align: left;
 
                 label {
-                    font-size: 1.4rem; // 크기 살짝 키움
-                    // 🚨 (수정) 라벨 색상 더 진하게
-                    color: #8d6e63;
-                    letter-spacing: .1rem; // rem 단위 spacing
+                    font-size: 1.4rem;
+                    // 🚨 (수정) 라벨 색상 조정
+                    color: #795548; // Brown 500
+                    letter-spacing: 0.1rem;
                     display: block;
-                    margin-bottom: .5rem; // rem 단위 margin
-                    text-shadow: .1rem .1rem .1rem rgba(255, 255, 255, 0.2); // 밝은 그림자
+                    margin-bottom: 0.5rem;
+                    text-shadow: none; // 그림자 제거
                 }
 
                 input {
                     width: 100%;
                     background: transparent;
                     border: none;
-                    border-bottom: .1rem solid #bfae95;
-                    // 🚨 (수정) 입력 텍스트 색상 더 밝게
-                    color: #fff;
-                    font-size: 1.6rem; // 크기 살짝 키움
-                    padding: .8rem .5rem;
+                    border-bottom: 0.1rem solid #a1887f; // Brown 300
+                    // 🚨 (수정) 입력 텍스트 색상 (어두운 색으로)
+                    color: #3e2723; // Brown 900
+                    font-size: 1.6rem;
+                    padding: 0.8rem 0.5rem;
                     font-family: 'IM Fell DW Pica', serif;
-                    text-shadow: .1rem .1rem .2rem rgba(0, 0, 0, 0.5); // 어두운 그림자
+                    text-shadow: none; // 그림자 제거
 
                     &::placeholder {
-                        color: #bfae95; // placeholder 색상 조정
+                        color: #a1887f; // placeholder 색상
                         font-style: italic;
                     }
 
                     &:focus {
                         outline: none;
-                        border-bottom: .1rem solid #d9c5a9;
+                        border-bottom: 0.1rem solid #5d4037; // Brown 700
                     }
                 }
 
@@ -197,42 +195,44 @@
         font-family: sans-serif;
         font-size: 1.3rem;
 
+        // 🚨 배경이 밝아졌으므로 에러 메시지 스타일 조정
         .am-msg {
-            padding: .8rem 1rem;
+            padding: 0.8rem 1rem;
             border-radius: var(--radius-s);
-            border: .1rem solid;
-            margin-bottom: .5rem;
+            border: 0.1rem solid;
+            margin-bottom: 0.5rem;
 
             &.error,
             &.warn {
-                background: rgba(251, 146, 60, 0.2);
-                color: #fed7aa;
-                border-color: #fb923c;
+                background: rgba(239, 68, 68, 0.1); // 옅은 붉은 배경
+                color: #b91c1c; // 진한 붉은 텍스트 (red-800)
+                border-color: #fca5a5; // 옅은 붉은 테두리 (red-300)
             }
         }
 
         .am-subtle {
             font-size: 1.2rem;
-            color: #bfae95;
+            color: #795548; // 어두운 갈색
         }
     }
 
     .alert-warn {
-        // (기존 스타일 재사용 및 테마 적용)
-        margin: 0;
-        padding: 1rem 1.2rem;
-        border-radius: var(--radius-s);
-        border: .1rem solid;
-        font-size: 1.4rem;
         position: absolute;
         bottom: 10%;
         left: 50%;
         transform: translateX(-50%);
-        width: 50%; // 너비 조정
-        background: rgba(251, 146, 60, 0.2);
-        color: #fed7aa;
-        border-color: #fb923c;
+        width: 50%;
+        margin: 0;
+        padding: 1rem 1.2rem;
+        border-radius: var(--radius-s);
+        border: 0.1rem solid;
+        font-size: 1.4rem;
         font-family: sans-serif;
+
+        // 🚨 테마 색상 조정 (더 명확하게)
+        background: rgba(245, 158, 11, 0.1); // 옅은 노랑/주황 배경 (amber-500)
+        color: #b45309; // 진한 주황 텍스트 (amber-700)
+        border-color: #fcd34d; // 옅은 노랑 테두리 (amber-300)
     }
 
     .code {

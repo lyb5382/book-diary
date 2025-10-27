@@ -3,15 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import api from '../api/client' // 🚨 AuthModal의 api client를 import
 import './AuthPanel.scss'
 
-// (이미지 import는 그대로 유지)
-import grimoireBgOnly from '../assets/grimoire_background_only.png';
-import grimoireFormOverlay from '../assets/grimoire_form_overlay.png';
-import grimoireSealNormal from '../assets/grimoire_seal_normal.png';
-import grimoireSealHover from '../assets/grimoire_seal_hover.png';
-
-// 🚨 AuthModal import 제거
-// import AuthModal from './AuthModal' 
-
 const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, requiredRole }) => {
     // 🚨 AuthModal의 모든 state를 이관합니다.
     const [mode, setMode] = useState('login') // 'login' 또는 'register'
@@ -55,7 +46,7 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
             }
             const url = mode === 'register' ? '/api/auth/register' : '/api/auth/login'
             const { data } = await api.post(url, payload)
-            
+
             setAttemptInfo({ attempts: null, remaining: null, locked: false })
             setErr('')
             onAuthed?.(data) //{user, token}
@@ -78,7 +69,6 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
     return (
         <section className='admin-wrap'>
             <div className="inner">
-                {/* 1. 로그인/회원가입 탭 (신규) */}
                 {!isAuthed && (
                     <div className="am-tabs grimoire-tabs">
                         <button type='button' className={mode === 'login' ? 'on' : ''} onClick={() => setMode('login')}>
@@ -93,7 +83,7 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
                 <header className='admin-head'>
                     <h1 className='title'>{title}</h1>
                 </header>
-                
+
                 {/* 2. <form> 태그로 변경, onSubmit 연결 */}
                 <form className="auth-area pre-auth" onSubmit={submit}>
                     {!isAuthed ? (
@@ -139,7 +129,7 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
                                     required
                                 />
                             </div>
-                            
+
                             {/* 5. 왁스 봉인 버튼을 submit 버튼으로 변경 */}
                             <button type="submit" className="btn-grimoire-seal" disabled={loading || attemptInfo.locked}>
                                 {loading && <span>인증중...</span>}
@@ -165,7 +155,7 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
                         </div>
                     )}
                 </form>
-                
+
                 {/* 6. 에러 메시지 영역 (신규) */}
                 {!isAuthed && (
                     <div className="grimoire-messages">
@@ -187,7 +177,6 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
                     </div>
                 )}
 
-                {/* (기존 코드) */}
                 {isAuthed && !hasRequiredRole && (
                     <div className="alert alert-warn">
                         현재 계정에는 관리자 권한이 없습니다. 관리자 승인이 필요합니다.
@@ -199,7 +188,6 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
                     </pre>
                 )}
             </div>
-            {/* 🚨 AuthModal 호출 제거 */}
         </section>
     )
 }
