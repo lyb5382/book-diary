@@ -5,6 +5,28 @@ const { presignGet } = require('../src/s3')
 const mongoose = require('mongoose')
 const Post = require('../models/Posts')
 
+const S3_BASE_URL = process.env.S3_BASE_URL || `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com`
+
+function joinS3Url(base, key) {
+    const b = String(base || '').replace(/\/+$/, '')
+    const k = String(key || '').replace(/^\/+/, '')
+    return `${b}/${k}`
+}
+
+const toArray = (val) => {
+    if (!val) return []
+    if (Array.isArray(val)) return val.filter(Boolean)
+    if (typeof val === 'string') {
+        try {
+            const parsed = JSON.parse(val); return Array.isArray(parsed) ? parsed.filter(Boolean) : [val]
+        }
+        catch {
+            return [val]
+        }
+    }
+    return []
+}
+
 const authenticateToken = (req, res, next) => {
     let token = null
     const h = req.headers.authorization
@@ -20,7 +42,6 @@ const authenticateToken = (req, res, next) => {
         return res.status(403).json({ message: '유효하지 않은 토큰' })
     }
 }
-
 const ensureObjectId = (req, res, next) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         return res.status(400).json({ message: '잘못된 id' })
@@ -30,25 +51,20 @@ const ensureObjectId = (req, res, next) => {
 
 const pickDefined = (obj) => Object.fromEntries(Object.entries(obj).filter(([, v]) => v !== undefined))
 
-
 router.post('/', authenticateToken, async (req, res) => {
     try {
         const { title, content, fileUrl = [], imageUrl } = req.body
-        if (typeof fileUrl === 'string') {
-            try {
-                fileUrl = JSON.parse(fileUrl)
-            } catch (error) {
-                fileUrl = [fileUrl]
-            }
-        }
-        const latest = await Post.findOne().sort({ number: -1 })
-        const nextNumber = latest ? latest.number + 1 : 1
+        let files = toArray(fileUrl)
+        if (!files.length && imageUrl) files = toArray(imageUrl)
+        const uid = req.user._id || req.user.id
+        const latest = await Post.findOne({ user: uid }).sort({ number: -1 })
+        const nextNumber = latest ? (Number(latest.number) + 1) : 1
         const post = await Post.create({
-            user: req.user._id || req.user.id,
+            user: uid,
             number: nextNumber,
             title,
             content,
-            fileUrl,
+            fileUrl: files,
             imageUrl
         })
         res.status(201).json(post)
@@ -61,15 +77,12 @@ router.post('/', authenticateToken, async (req, res) => {
 router.get('/', async (req, res) => {
     try {
         const list = await Post.find().sort({ createdAt: -1 }).lean()
-        const data = await Promise.all(
-            list.map(async (p) => {
-                const arr = Array.isArray(p.fileUrl) ? p.fileUrl : (p.imageUrl ? [p.imageUrl] : [])
-                const urls = await Promise.all(
-                    arr.map(async (v) => (v?.startsWith('http') ? v : await presignGet(v, 3600)))
-                )
-                return { ...p, fileUrl: urls }
-            })
-        )
+        const data = list.map((p) => {
+            const raw = Array.isArray(p.fileUrl) ? p.fileUrl : p.imageUrl ? [p.imageUrl] : []
+            const keys = raw.filter((v) => typeof v === 'string' && v.length > 0)
+            const urls = keys.map((v) => v.startsWith('http') ? v : joinS3Url(S3_BASE_URL, v))
+            return { ...p, fileUrl: urls }
+        })
         res.json(data)
     } catch (error) {
         console.error('Get /api/posts failed', error)
@@ -82,28 +95,40 @@ router.get('/my', authenticateToken, async (req, res) => {
         const userId = req.user.id || req.user._id
         if (!userId) return res.status(400).json({ message: 'suer 정보 없음' })
         const myPosts = await Post.find({ user: userId }).sort({ createdAt: -1 }).lean()
-        res.json(myPosts)
+        const data = myPosts.map(p => {
+            const raw = Array.isArray(p.fileUrl) ? p.fileUrl : (p.imageUrl ? [p.imageUrl] : [])
+            const keys = raw.filter(v => typeof v === 'string' && v.length > 0)
+            const urls = keys.map(v => (v.startsWith('http') ? v : joinS3Url(S3_BASE_URL, v)))
+            return { ...p, fileUrl: urls }
+        });
+        res.json(data)
     } catch (error) {
         console.error('Get /api/posts/my failed', error)
         res.status(500).json({ message: 'server error' })
     }
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
     try {
         const doc = await Post.findById(req.params.id)
         if (!doc) return res.status(404).json({ message: '존재하지 않음' })
-        res.json(doc)
+        const keys = Array.isArray(doc.fileUrl) ? doc.fileUrl : (doc.imageUrl ? [doc.imageUrl] : [])
+        const urls = keys.filter(v => typeof v === 'string' && v.length > 0).map(v => (v.startsWith('http') ? v : joinS3Url(S3_BASE_URL, v)))
+        res.json({ ...doc, fileUrl: urls })
     } catch (error) {
         console.error('Get /api/posts/my failed', error)
         res.status(500).json({ message: 'server error' })
     }
 })
 
-router.put('/:id', authenticateToken, async (req, res) => {
+router.put('/:id', authenticateToken, ensureObjectId, async (req, res) => {
     try {
         const { title, content, fileUrl, imageUrl } = req.body
-        const updates = pickDefined({ title, content, fileUrl, imageUrl })
+        const updates = pickDefined({ title, content, fileUrl: (fileUrl !== undefined) ? toArray(fileUrl) : undefined, imageUrl })
+        const doc = await Post.findById(req.params.id).select('user').lean()
+        if (!doc) return res.status(404).json({ message: '존재하지 않는 게시글' })
+        const uid = String(req.user.id || req.user._id)
+        if (String(doc.user) !== uid) return res.status(403).json({ message: '권한이 없습니다.' })
         const updated = await Post.findByIdAndUpdate(req.params.id, { $set: updates }, { new: true, runValidators: true })
         if (!updated) return res.status(404).json({ message: '존재하지 않음' })
         res.json(updated)
@@ -114,9 +139,12 @@ router.put('/:id', authenticateToken, async (req, res) => {
 
 router.delete('/:id', authenticateToken, ensureObjectId, async (req, res) => {
     try {
-        const deleted = await Post.findByIdAndUpdate(req.params.id)
-        if (!deleted) return res.status(404).json({ message: '존재하지 않음' })
-        res.json({ ok: true, id: deleted._id })
+        const doc = await Post.findById(req.params.id).select('user')
+        if (!doc) return res.status(404).json({ message: '존재하지 않는 게시글' })
+        const uid = String(req.user.id || req.user._id)
+        if (String(doc.user) !== uid) return res.status(403).json({ message: '권한이 없습니다.' })
+        await doc.deleteOne()
+        res.json({ ok: true, id: doc._id })
     } catch (error) {
         res.status(500).json({ message: 'server error' })
     }
