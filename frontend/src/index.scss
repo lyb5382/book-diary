@@ -1,14 +1,7 @@
 @font-face {
-    font-family: 'HancomMalrangmalrang';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'HancomMalrangmalrang';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Bold.woff2') format('woff2');
-    font-weight: 700;
+    font-family: 'MapoFlowerIsland';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/MapoFlowerIslandA.woff') format('woff');
+    font-weight: normal;
     font-display: swap;
 }
 
@@ -39,7 +32,7 @@ body {
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    font-family: 'HancomMalrangmalrang', sans-serif;
+    font-family: 'MapoFlowerIsland', sans-serif;
 
     a {
         color: inherit;
