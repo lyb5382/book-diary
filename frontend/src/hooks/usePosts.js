@@ -1,5 +1,6 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { createPost } from "../api/postApi"
+import { fetchMyPosts } from '../api/postApi'
 
 export function usePosts() {
     const [it, setIt] = useState([])
@@ -7,9 +8,10 @@ export function usePosts() {
     const load = useCallback(async () => {
         setLoading(true)
         try {
-
+            const list = await fetchMyPosts()
+            setIt(list)
         } catch (error) {
-
+            setLoading(false)
         }
     })
     const add = useCallback(async ({ title, content, filekey = [] }) => {
@@ -17,6 +19,8 @@ export function usePosts() {
         setIt((prev) => [created, ...prev])
         return created
     }, [])
+
+    useEffect(() => { load() }, [load])
 
     return {
         it, loading, load, add

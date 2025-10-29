@@ -2,6 +2,9 @@
     // 🚨 가독성을 위해 전체 텍스트 색상 조정 및 그림자 추가
     color: #f0e6d8; // 밝은 베이지색 텍스트
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); // 어두운 그림자
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     .landing-hero {
         padding: 4rem 2rem; // 패딩 조정

@@ -1,28 +1,59 @@
+/* Header.scss */
+
 .site-header {
     position: sticky;
     top: 0;
     z-index: 10;
+    background-color: rgba(62, 39, 35, 0.4);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem 2rem;
 
-    .inner {
+    .header-menu {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        max-width: 120rem;
+        margin: 0 auto;
 
-        h1.logo {
-            font-weight: 700;
-            font-size: 3.4rem;
-            color: var(--primary);
+        .logo {
+            font-size: 2.4rem;
+            color: #f0e6d8;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+            margin: 0;
         }
 
         .auth-area {
-            .welcome {
-                display: inline-block;
-                font-size: 1.4rem;
-                color: var(--muted);
-            }
 
-            .btn {
-                margin-left: 1rem;
+            >div {
+                display: flex;
+                align-items: center;
+                gap: 1.5rem;
+
+                .welcome {
+                    color: #f0e6d8;
+                    font-size: 1.4rem;
+                }
+
+                .btn.logout {
+                    background-color: transparent;
+                    color: #f0e6d8;
+                    border: 1px solid rgba(255, 255, 255, 0.2);
+                    padding: 0.6rem 1.2rem;
+                    font-size: 1.4rem;
+                    transition: background-color 0.2s ease, color 0.2s ease;
+
+                    &:hover {
+                        background-color: rgba(255, 255, 255, 0.1);
+                        color: #fff;
+                        transform: none;
+                    }
+
+                    &:active {
+                        transform: none;
+                        background-color: rgba(255, 255, 255, 0.05);
+                    }
+                }
             }
         }
     }

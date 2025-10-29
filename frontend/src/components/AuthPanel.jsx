@@ -4,27 +4,28 @@ import api from '../api/client' // 🚨 AuthModal의 api client를 import
 import './AuthPanel.scss'
 
 const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, requiredRole }) => {
-    // 🚨 AuthModal의 모든 state를 이관합니다.
-    const [mode, setMode] = useState('login') // 'login' 또는 'register'
+    const [mode, setMode] = useState('login')
     const [attemptInfo, setAttemptInfo] = useState({ attempts: null, remaining: null, locked: false })
     const [form, setForm] = useState({ email: '', password: '', displayName: '' })
     const [loading, setLoading] = useState(false)
     const [err, setErr] = useState('')
-
-    // 🚨 [open] state 제거
-    // const [open, setOpen] = useState(false) 
-
     const hasRequiredRole = !requiredRole || (user && user.role == requiredRole)
     const navigate = useNavigate()
     const isAdminPage = requiredRole === 'admin'
-    // 🚨 title을 mode에 따라 동적으로 변경
-    const title = mode === 'login' ? '관리자 인증' : '서약 등록'
+    const title = mode === 'login' ? '📜관리자 인증' : '🔮서약 등록'
 
     useEffect(() => {
-        // ... (기존 네비게이션 useEffect - 정상) ...
-    }, [isAuthed, user, isAdminPage, navigate])
+        if (isAuthed) {
+            if (isAdminPage) {
+                if (hasRequiredRole) {
+                    navigate('/admin/dashboard', { replace: true });
+                } else {
+                    navigate('/user/dashboard', { replace: true });
+                }
+            }
+        }
+    }, [isAuthed, user, isAdminPage, hasRequiredRole, navigate])
 
-    // 🚨 AuthModal의 핸들러(handleChange, submit)를 이관합니다.
     const handleChange = (e) => {
         const { name, value } = e.target
         setForm((prev) => ({ ...prev, [name]: value }))
@@ -46,10 +47,9 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
             }
             const url = mode === 'register' ? '/api/auth/register' : '/api/auth/login'
             const { data } = await api.post(url, payload)
-
             setAttemptInfo({ attempts: null, remaining: null, locked: false })
             setErr('')
-            onAuthed?.(data) //{user, token}
+            onAuthed?.(data)
         } catch (error) {
             const d = error?.response?.data || {}
             const msg = error?.response?.data?.message || (mode === 'register' ? '회원가입 실패' : '로그인 실패')
@@ -64,11 +64,9 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
         }
     }
 
-    // 🚨 if (open) { ... } return 구문 제거
-
     return (
         <section className='admin-wrap'>
-            <div className="inner">
+            <div className="inner login">
                 {!isAuthed && (
                     <div className="am-tabs grimoire-tabs">
                         <button type='button' className={mode === 'login' ? 'on' : ''} onClick={() => setMode('login')}>
@@ -84,11 +82,9 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
                     <h1 className='title'>{title}</h1>
                 </header>
 
-                {/* 2. <form> 태그로 변경, onSubmit 연결 */}
                 <form className="auth-area pre-auth" onSubmit={submit}>
                     {!isAuthed ? (
                         <>
-                            {/* 3. 회원가입 시에만 닉네임 입력창 노출 (신규) */}
                             {mode === 'register' && (
                                 <div className="input-group display-name-input">
                                     <label htmlFor="displayName">Your Name</label>
@@ -104,7 +100,6 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
                                 </div>
                             )}
 
-                            {/* 4. 기존 입력창에 로직 연결 */}
                             <div className="input-group email-input">
                                 <label htmlFor="email">Incantation of Name (Email)</label>
                                 <input
@@ -130,13 +125,11 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
                                 />
                             </div>
 
-                            {/* 5. 왁스 봉인 버튼을 submit 버튼으로 변경 */}
                             <button type="submit" className="btn-grimoire-seal" disabled={loading || attemptInfo.locked}>
                                 {loading && <span>인증중...</span>}
                             </button>
                         </>
                     ) : (
-                        // 로그인 후 (우측 페이지)
                         <div className="auth-area post-auth">
                             {user && (
                                 <div className="auth-row">
@@ -156,7 +149,6 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
                     )}
                 </form>
 
-                {/* 6. 에러 메시지 영역 (신규) */}
                 {!isAuthed && (
                     <div className="grimoire-messages">
                         {err && (

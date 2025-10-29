@@ -14,9 +14,9 @@ const Header = ({ isAuthed, user, onLogout }) => {
 
     return (
         <header className='site-header'>
-            <div className="inner">
+            <div className="header-menu">
                 <h1 className='logo'>
-                    📷Photomemo
+                    📜Book Diary
                 </h1>
                 <div className="auth-area">
                     {isAuthed && (

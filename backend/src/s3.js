@@ -1,4 +1,4 @@
-const { S3Client, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3')
+const { S3Client, PutObjectCommand, GetObjectCommand, DeleteBucketCommand } = require('@aws-sdk/client-s3')
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner')
 
 const required = ['AWS_REGION', 'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'S3_BUCKET']
@@ -29,4 +29,22 @@ async function presignGet(Key, sec = 300) {
     return getSignedUrl(s3, cmd, { expiresIn: sec })
 }
 
-module.exports = { s3, presignPut, presignGet, Bucket }
+async function deletObject(key) {
+    if (!Bucket) throw new Error('s3 bucket is undefined')
+    if (!key) throw new Error('key is required')
+    const cmd = new DeleteBucketCommand({ Bucket, key })
+    await s3.send(cmd)
+    console.log(`[s3] Deleted: ${key}`)
+    return { ok: true, message: `Deleted: ${key}` }
+}
+
+async function updateObject(Key, Body, ContentType) {
+    if (!Bucket) throw new Error('s3 bucket is undefined')
+    if (!key) throw new Error('key is required')
+    const cmd = new PutObjectCommand({ Bucket, Key, Body, ContentType })
+    await s3.send(cmd)
+    console.log(`[s3] Update: ${key}`)
+    return { ok: true, message: `Update: ${key}` }
+}
+
+module.exports = { s3, presignPut, presignGet, Bucket, deletObject, updateObject }

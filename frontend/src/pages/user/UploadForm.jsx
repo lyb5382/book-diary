@@ -72,9 +72,9 @@ const UploadForm = ({ onUploaded, initail, onClose }) => {
                     </div>
                 </div>
                 <div className="actions">
-                    <button type='button' className="btn ghost" onClick={onClose} disabled={uploading}>❌</button>
+                    <button type='button' className="btn ghost" onClick={onClose} disabled={uploading}>✖️</button>
                     <button type='submit' disabled={uploading} className="btn primary">
-                        {uploading ? '🔄️' : '⬆️'}
+                        {uploading ? '🔄️' : '✔️'}
                     </button>
                 </div>
             </form>
