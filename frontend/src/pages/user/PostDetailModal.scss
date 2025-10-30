@@ -1,0 +1,126 @@
+/* 🚨 중요: UploadForm.scss 파일의 내용을 복사한 후, 
+  .Upload-form 선택자를 .Detail-panel로 변경하고 아래 스타일을 추가/수정합니다.
+*/
+
+/* .am-backdrop { ... } // (UploadForm.scss 또는 전역에서 가져옴)
+*/
+
+.am-panel.Detail-panel {
+    background-color: rgba(46, 29, 26, 0.7);
+    // 🚨 backdrop-filter: blur(10px); // (제거) .am-backdrop이 담당
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f0e6d8;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    max-width: 60rem;
+    max-height: 90vh;
+    overflow-y: auto; // 🚨 스크롤 기능은 유지해야 합니다.
+    display: flex;
+    width: 90%;
+    border-radius: var(--radius-l);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2.5rem;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 0.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 1.5rem;
+
+        h2 {
+            font-family: 'Cinzel', serif;
+            color: #f0e6d8;
+            font-size: 2.4rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+        }
+
+        .sub {
+            font-size: 1.3rem;
+            color: #bfae95;
+            margin-top: 0.5rem;
+            font-family: sans-serif;
+        }
+    }
+
+    .detail-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+
+        .detail-img-wrapper {
+            .detail-img {
+                width: 90%; // 이미지 꽉 채움
+                height: auto; // 비율 유지
+                border-radius: var(--radius-s);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                margin: 0 auto;
+                display: block;
+            }
+        }
+
+        .detail-content {
+            p {
+                font-family: 'HancomMalrangmalrang', sans-serif; // 본문 폰트
+                font-size: 1.6rem;
+                color: #d7ccc8;
+                line-height: 1.7;
+                white-space: pre-wrap; // 줄바꿈 및 공백 유지
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            }
+        }
+    }
+
+    .actions {
+        display: flex;
+        justify-content: center; // 닫기 버튼 중앙 정렬
+        gap: 1rem;
+        margin-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 2rem;
+
+        .btn {
+            // (UploadForm.scss의 버튼 스타일과 동일)
+            width: 4.2rem;
+            height: 4.2rem;
+            padding: 0;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            border: 1px solid;
+            font-family: 'IM Fell DW Pica', serif;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            /* ... (hover, active, disabled, spin 등) ... */
+        }
+
+        .btn.ghost {
+            background: transparent;
+            border-color: rgba(240, 230, 216, 0.3);
+            color: #bfae95;
+
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.05);
+                color: #f0e6d8;
+            }
+        }
+    }
+}
+
+.am-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px); // 🚨 "밑에게 블러 처리되는" 효과
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}

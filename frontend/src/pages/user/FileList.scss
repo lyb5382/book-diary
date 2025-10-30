@@ -1,0 +1,34 @@
+/* FileList.scss */
+
+.post-list {
+    // 🚨 CSS Grid를 사용한 컬럼 레이아웃
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(30rem, 1fr)); // 최소 300px, 반응형
+    gap: 2rem; // 카드 사이의 간격
+    padding: 2rem; // 목록 전체의 여백
+    max-width: 120rem; // 최대 너비
+    margin: 0 auto; // 중앙 정렬
+}
+
+// "게시물 없음" / "로딩 중" 메시지 카드
+.list-message-card {
+    // 🚨 .post-card와 유사한 유리 효과 적용
+    background-color: rgba(46, 29, 26, 0.45);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f0e6d8;
+    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.3);
+    border-radius: var(--radius-s);
+    padding: 3rem 2rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+
+    // 🚨 목록과 동일한 위치에 표시되도록
+    max-width: 120rem;
+    margin: 2rem auto; // .post-list의 padding/margin과 유사하게
+
+    p {
+        font-family: 'Cinzel', serif;
+        font-size: 1.8rem;
+        color: #bfae95;
+    }
+}

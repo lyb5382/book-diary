@@ -15,9 +15,11 @@ const Header = ({ isAuthed, user, onLogout }) => {
     return (
         <header className='site-header'>
             <div className="header-menu">
-                <h1 className='logo'>
-                    📜Book Diary
-                </h1>
+                <Link to="/" className='logo-link'>
+                    <h1 className='logo'>
+                        📜Book Diary
+                    </h1>
+                </Link>
                 <div className="auth-area">
                     {isAuthed && (
                         <div>

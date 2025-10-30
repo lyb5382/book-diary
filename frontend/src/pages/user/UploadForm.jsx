@@ -48,7 +48,7 @@ const UploadForm = ({ onUploaded, initail, onClose }) => {
             <form ref={panelRef} onSubmit={handlesubmit} className="am-panel Upload-form">
                 <header>
                     <h2>file upload</h2>
-                    <p className="sub">img & memo</p>
+                    <p className="sub">book & diary</p>
                 </header>
                 <div className="form-grid">
                     <div className="field">

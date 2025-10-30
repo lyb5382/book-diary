@@ -1,28 +1,33 @@
-import { useCallback, useEffect, useState } from 'react'
-import { createPost } from "../api/postApi"
-import { fetchMyPosts } from '../api/postApi'
+import { useCallback, useState } from 'react'
+import { createPost, fetchMyPosts } from "../api/postApi"
 
 export function usePosts() {
-    const [it, setIt] = useState([])
+    const [items, setItems] = useState([])
     const [loading, setLoading] = useState(false)
     const load = useCallback(async () => {
         setLoading(true)
         try {
             const list = await fetchMyPosts()
-            setIt(list)
+            setItems(list)
         } catch (error) {
+            console.error("게시물 로드 실패:", error)
+        } finally {
             setLoading(false)
         }
-    })
-    const add = useCallback(async ({ title, content, filekey = [] }) => {
-        const created = await createPost({ title, content, filekey })
-        setIt((prev) => [created, ...prev])
-        return created
     }, [])
 
-    useEffect(() => { load() }, [load])
+    const add = useCallback(async ({ title, content, fileKeys = [] }) => {
+        try {
+            const created = await createPost({ title, content, fileKeys })
+            setItems((prev) => [created, ...prev])
+            return created
+        } catch (error) {
+            console.error("게시물 추가 실패:", error)
+            throw error
+        }
+    }, [])
 
     return {
-        it, loading, load, add
+        items, loading, load, add
     }
 }
