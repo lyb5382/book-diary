@@ -1,34 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import UploadForm from './UploadForm'
-import FileList from './FileList'
+import React, { useState, useEffect } from 'react'
+import UploadForm from '../../components/UploadForm' // 🚨 경로 수정 (components 폴더 가정)
+import FileList from '../../components/FileList'   // 🚨 경로 수정 (components 폴더 가정)
+import PostDetailModal from '../../components/PostDetailModal' // 🚨 경로 수정 (components 폴더 가정)
 import './UserDashboard.scss'
-import { uploadToS3 } from '../../api/postApi'
-import { usePosts } from '../../hooks/usePosts'
-import PostDetailModal from './PostDetailModal'
+// 🚨 (수정) usePosts 훅을 PostProvider에서 import
+import { usePosts } from '../../context/PostProvider'
+// 🚨 uploadToS3는 이제 UploadForm이 직접 사용하지 않으므로 여기서 필요 없음
+// import { uploadToS3 } from '../../api/postApi'
 
 const UserDashboard = () => {
     const [search, setSearch] = useState('')
     const [openUpload, setOpenUpload] = useState(false) // 🚨 'open' -> 'openUpload'로 명칭 변경
-    const { items, loading, load: loadPosts, add } = usePosts()
 
     // 🚨 (신규) 상세 보기 모달을 위한 state
     const [selectedPost, setSelectedPost] = useState(null) // null이면 닫힘, item 객체면 열림
-
-    useEffect(() => {
-        loadPosts();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const handleupload = async ({ title, content, file }) => {
-        try {
-            const key = file ? await uploadToS3(file) : null
-            const created = await add({ title, content, fileKeys: key ? [key] : [] }) // 🚨 fileKeys (대문자 K)
-            console.log('db ok!!', created)
-            loadPosts();
-        } catch (error) {
-            console.error('uploaded failed', error)
-        }
-    }
 
     useEffect(() => {
         if (openUpload || selectedPost) { // UploadForm 또는 PostDetailModal이 열려있으면
@@ -59,7 +44,7 @@ const UserDashboard = () => {
 
             {/* 업로드 폼 모달 */}
             {openUpload && (
-                <UploadForm onUploaded={handleupload} onClose={() => setOpenUpload(false)} />
+                <UploadForm onClose={() => setOpenUpload(false)} />
             )}
 
             {/* 🚨 (신규) 상세 보기 모달 */}
@@ -72,8 +57,7 @@ const UserDashboard = () => {
 
             {/* 🚨 onPostClick 핸들러 전달 */}
             <FileList
-                items={items}
-                loading={loading}
+                search={search}
                 onPostClick={handlePostClick}
             />
         </section>

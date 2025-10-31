@@ -7,6 +7,7 @@ import Header from './components/Header'
 import ProtectRoute from './components/ProtectRoute'
 import UserDashboard from './pages/user/UserDashboard'
 import AdminDashboard from './pages/admin/adminDashboard'
+import { PostProvider } from './context/PostProvider'
 import { fetchMe as apiFetchMe, logout as apiLogout, saveAuthToStorage, clearAuthStorage } from "./api/client"
 
 function App() {
@@ -57,59 +58,61 @@ function App() {
   }, [isAuthed])
 
   return (
-    <div className={isLoginPage ? 'page-login' : 'page'}>
-      {showHeader && <Header
-        isAuthed={isAuthed}
-        user={user}
-        onLogout={handleLogout}
-      />}
+    <PostProvider>
+      <div className={isLoginPage ? 'page-login' : 'page'}>
+        {showHeader && <Header
+          isAuthed={isAuthed}
+          user={user}
+          onLogout={handleLogout}
+        />}
 
-      <Routes>
-        <Route path='/' element={<Landing />} />
-        {/* 로그인 회원가입 */}
-        <Route
-          path='/admin/login'
-          element={<AuthPanel
-            isAuthed={isAuthed}
-            user={user}
-            me={me}
-            onFetchMe={handleFetchMe}
-            onLogout={handleLogout}
-            onAuthed={handleAuthed}
-            requiredRole="admin"
-          />}
-        />
-        {/* 사용자 보호구역 */}
-        <Route
-          path='/user'
-          element={
-            <ProtectRoute
-              user={user}
-              isAuthed={isAuthed}
-              redirect='/admin/login'
-            />
-          }
-        >
-          <Route index element={<Navigate to="/user/dashboard" replace />} />
-          <Route path='dashboard' element={<UserDashboard />} />
-        </Route>
-        {/* 관리자 보호구역 */}
-        <Route
-          path='/admin'
-          element={
-            <ProtectRoute
+        <Routes>
+          <Route path='/' element={<Landing />} />
+          {/* 로그인 회원가입 */}
+          <Route
+            path='/admin/login'
+            element={<AuthPanel
               isAuthed={isAuthed}
               user={user}
+              me={me}
+              onFetchMe={handleFetchMe}
+              onLogout={handleLogout}
+              onAuthed={handleAuthed}
               requiredRole="admin"
-            />
-          }
-        >
-          <Route index element={<Navigate to="/admin/dashboard" replace />} />
-          <Route path='dashboard' element={<AdminDashboard />} />
-        </Route>
-        <Route path='*' element={<Navigate to="/" replace />} />
-      </Routes>
-    </div>
+            />}
+          />
+          {/* 사용자 보호구역 */}
+          <Route
+            path='/user'
+            element={
+              <ProtectRoute
+                user={user}
+                isAuthed={isAuthed}
+                redirect='/admin/login'
+              />
+            }
+          >
+            <Route index element={<Navigate to="/user/dashboard" replace />} />
+            <Route path='dashboard' element={<UserDashboard />} />
+          </Route>
+          {/* 관리자 보호구역 */}
+          <Route
+            path='/admin'
+            element={
+              <ProtectRoute
+                isAuthed={isAuthed}
+                user={user}
+                requiredRole="admin"
+              />
+            }
+          >
+            <Route index element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path='dashboard' element={<AdminDashboard />} />
+          </Route>
+          <Route path='*' element={<Navigate to="/" replace />} />
+        </Routes>
+      </div>
+    </PostProvider>
   )
 }
 

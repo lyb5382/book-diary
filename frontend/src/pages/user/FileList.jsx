@@ -1,33 +1,44 @@
-import React from 'react'
+import React, { useEffect, useMemo } from 'react'
 import UserPostItem from './UserPostItem'
+import { usePosts } from '../../hooks/usePosts'
 import './FileList.scss'
 
-const FileList = ({ items = [], loading, onReload, search, onPostClick }) => {
+const FileList = ({ search = '', onPostClick }) => {
+    const { items, loading, load } = usePosts()
+    useEffect(() => {
+        load()
+    }, [load])
+    const filtered = useMemo(() => {
+        const q = search.trim().toLowerCase()
+        if (!q) return items
+        return items.filter((i) =>
+            i.title?.toLowerCase().includes(q) ||
+            i.content?.toLowerCase().includes(q)
+        )
+    }, [items, search])
     console.log('[FileList] 로딩 상태:', loading)
-    console.log('[FileList] 수신된 items 배열:', items)
+    console.log('[FileList] 수신된 items 배열:', filtered)
 
     if (loading) {
         return (
-            // 🚨 '.inner' 클래스를 '.list-message-card'로 변경
             <div className="list-message-card" style={{ textAlign: 'center', padding: '2rem' }}>
                 <p>데이터 로딩 중...</p>
             </div>
         )
     }
-    if (!items || !items.length) {
+
+    if (!filtered || !filtered.length) {
         console.warn('[FileList] items 배열이 비어있어 "게시물 없음"을 표시합니다.')
         return (
-            // 🚨 '.inner' 클래스를 '.list-message-card'로 변경
             <div className="list-message-card" style={{ textAlign: 'center', padding: '2rem' }}>
-                <p>기록된 서약이 없습니다.</p>
+                <p>{search ? '검색 결과가 없습니다.' : '기록된 서약이 없습니다.'}</p>
             </div>
         )
     }
 
     return (
         <div className='post-list'>
-            {items.map((i) => (
-                // 🚨 items={i} -> item={i}로 수정
+            {filtered.map((i) => (
                 <UserPostItem key={i._id} item={i} onClick={() => onPostClick(i)} />
             ))}
         </div>
