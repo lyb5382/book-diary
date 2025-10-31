@@ -1,33 +1,82 @@
-import React, { useState, useEffect } from 'react'
-import UploadForm from '../../components/UploadForm' // 🚨 경로 수정 (components 폴더 가정)
-import FileList from '../../components/FileList'   // 🚨 경로 수정 (components 폴더 가정)
-import PostDetailModal from '../../components/PostDetailModal' // 🚨 경로 수정 (components 폴더 가정)
+import React, { useState, useEffect, useContext } from 'react'
+import UploadForm from './UploadForm'
+import FileList from './FileList'
 import './UserDashboard.scss'
-// 🚨 (수정) usePosts 훅을 PostProvider에서 import
-import { usePosts } from '../../context/PostProvider'
-// 🚨 uploadToS3는 이제 UploadForm이 직접 사용하지 않으므로 여기서 필요 없음
-// import { uploadToS3 } from '../../api/postApi'
+import PostDetailModal from './PostDetailModal'
+import { PostContext } from '../../context/PostContext'
+import { uploadToS3 } from '../../api/postApi'
 
 const UserDashboard = () => {
     const [search, setSearch] = useState('')
-    const [openUpload, setOpenUpload] = useState(false) // 🚨 'open' -> 'openUpload'로 명칭 변경
-
-    // 🚨 (신규) 상세 보기 모달을 위한 state
-    const [selectedPost, setSelectedPost] = useState(null) // null이면 닫힘, item 객체면 열림
+    const [openUpload, setOpenUpload] = useState(false)
+    const [selectedPost, setSelectedPost] = useState(null)
+    const [editingPost, setEditingPost] = useState(null)
+    const { add, remove, update } = useContext(PostContext)
 
     useEffect(() => {
-        if (openUpload || selectedPost) { // UploadForm 또는 PostDetailModal이 열려있으면
+        if (openUpload || selectedPost) {
             document.body.classList.add('modal-open');
         } else {
             document.body.classList.remove('modal-open');
         }
-        // 컴포넌트 언마운트 시 클래스 제거 (클린업)
         return () => {
             document.body.classList.remove('modal-open');
         };
     }, [openUpload, selectedPost]);
 
-    // 🚨 (신규) FileList에서 아이템 클릭 시 호출될 핸들러
+    const handleupload = async ({ id, title, content, file, replaceKey, currentKey }) => {
+        try {
+            let s3Key = null;
+            if (file) {
+                s3Key = await uploadToS3(file, { replaceKey });
+            } else if (id && currentKey) {
+                s3Key = currentKey;
+            }
+            const payload = {
+                title,
+                content,
+                fileKeys: s3Key ? [s3Key] : []
+            };
+            if (id) {
+                await update(id, payload);
+                console.log('db update ok!!', id);
+            } else {
+                await add(payload);
+                console.log('db add ok!!');
+            }
+            setOpenUpload(false);
+            setEditingPost(null);
+        } catch (error) {
+            console.error('uploaded failed', error);
+            alert("업로드/수정 중 오류가 발생했습니다.");
+        }
+    }
+    const handleAddClick = () => {
+        setEditingPost(null);
+        setOpenUpload(true);
+    };
+    const handleDelete = async (postItem) => {
+        if (window.confirm(`'${postItem.title}' 게시물을 정말 삭제하시겠습니까?`)) {
+            try {
+                await remove(postItem._id);
+                if (selectedPost?._id === postItem._id) {
+                    setSelectedPost(null);
+                }
+            } catch (error) {
+                console.error("삭제 실패:", error);
+                alert("삭제에 실패했습니다.");
+            }
+        }
+    }
+    const handleEdit = (postItem) => {
+        setSelectedPost(null);
+        setEditingPost(postItem);
+        setOpenUpload(true);
+    }
+    const handleCloseUpload = () => {
+        setOpenUpload(false);
+        setEditingPost(null);
+    }
     const handlePostClick = (postItem) => {
         setSelectedPost(postItem);
     }
@@ -37,29 +86,18 @@ const UserDashboard = () => {
             <div className="inner user">
                 <div className="search-warp">
                     <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder='검색' />
-                    {/* 🚨 setOpen -> setOpenUpload로 변경 */}
-                    <button className='btn primary' onClick={() => setOpenUpload(true)}>upload</button>
+                    <button className='btn primary' onClick={handleAddClick}>upload</button>
                 </div>
             </div>
-
-            {/* 업로드 폼 모달 */}
             {openUpload && (
-                <UploadForm onClose={() => setOpenUpload(false)} />
+                <UploadForm onUploaded={handleupload} onClose={handleCloseUpload} initail={editingPost} />
             )}
 
-            {/* 🚨 (신규) 상세 보기 모달 */}
             {selectedPost && (
-                <PostDetailModal
-                    post={selectedPost}
-                    onClose={() => setSelectedPost(null)}
-                />
+                <PostDetailModal post={selectedPost} onClose={() => setSelectedPost(null)} onEdit={() => handleEdit(selectedPost)} onDelete={() => handleDelete(selectedPost)} />
             )}
 
-            {/* 🚨 onPostClick 핸들러 전달 */}
-            <FileList
-                search={search}
-                onPostClick={handlePostClick}
-            />
+            <FileList search={search} onPostClick={handlePostClick} onEdit={handleEdit} onDelete={handleDelete} />
         </section>
     )
 }

@@ -1,7 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
-const { presignGet, deletObject } = require('../src/s3')
+// 🚨 1. deleteObject (정상)
+const { presignGet, deleteObject } = require('../src/s3')
 const mongoose = require('mongoose')
 const Post = require('../models/Posts')
 
@@ -38,7 +39,8 @@ const toArray = (val) => {
 const authenticateToken = (req, res, next) => {
     let token = null
     const h = req.headers.authorization
-    if (h.toLowerCase().startsWith('bearer')) {
+    // 🚨 (수정) h가 없을 경우를 대비한 방어 코드
+    if (h && h.toLowerCase().startsWith('bearer')) {
         token = h.slice(7).trim()
     }
     if (req.cookies?.token) token = req.cookies.token
@@ -101,7 +103,7 @@ router.get('/', async (req, res) => {
 router.get('/my', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id || req.user._id
-        if (!userId) return res.status(400).json({ message: 'suer 정보 없음' })
+        if (!userId) return res.status(400).json({ message: 'user 정보 없음' }) // 🚨 suer -> user 오타 수정
         const myPosts = await Post.find({ user: userId }).sort({ createdAt: -1 }).lean()
         const data = myPosts.map(p => {
             const raw = Array.isArray(p.fileUrl) ? p.fileUrl : (p.imageUrl ? [p.imageUrl] : [])
@@ -122,7 +124,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
         if (!doc) return res.status(404).json({ message: '존재하지 않음' })
         const keys = Array.isArray(doc.fileUrl) ? doc.fileUrl : (doc.imageUrl ? [doc.imageUrl] : [])
         const urls = keys.filter(v => typeof v === 'string' && v.length > 0).map(v => (v.startsWith('http') ? v : joinS3Url(S3_BASE_URL, v)))
-        res.json({ ...doc, fileUrl: urls })
+        res.json({ ...doc, fileUrl: urls }) // 🚨 .lean()이 아니므로 doc 그대로 반환
     } catch (error) {
         console.error('Get /api/posts/my failed', error)
         res.status(500).json({ message: 'server error' })
@@ -130,41 +132,41 @@ router.get('/:id', authenticateToken, async (req, res) => {
 })
 
 router.put("/:id", authenticateToken, ensureObjectId, async (req, res) => {
-    // 변경됨: ensureObjectId 추가
     try {
+        // 🚨 3. (수정) req.body의 변수들을 여기서 선언해야 합니다.
         const { title, content, fileUrl, imageUrl } = req.body;
 
         const before = await Post.findById(req.params.id)
             .select("user fileUrl imageUrl")
             .lean();
-
         if (!before)
             return res.status(404).json({ message: "존재하지 않는 게시글" });
 
-        const uid = String(req.user.id || req.user._id); // 추가됨
-        if (String(doc.user) !== uid) {
-            return res.status(403).json({ message: "권한이 없습니다." }); // 추가됨
+        const uid = String(req.user.id || req.user._id);
+
+        // 🚨 2. before.user (정상)
+        if (String(before.user) !== uid) {
+            return res.status(403).json({ message: "권한이 없습니다." });
         }
 
-        // 변경됨: undefined 필드로 기존값 덮어쓰지 않도록 필터링
         const updates = pickDefined({
             title,
             content,
-            fileUrl: fileUrl !== undefined ? toArray(fileUrl) : undefined, // 변경됨: 안전 변환
+            fileUrl: fileUrl !== undefined ? toArray(fileUrl) : undefined,
             imageUrl,
         });
         const oldKeys = [
             ...(Array.isArray(before.fileUrl) ? before.fileUrl : []),
             ...(before.imageUrl ? [before.imageUrl] : []),
         ]
-            .map(urlToKey) // 절대경로 → S3 키 변환
+            .map(urlToKey)
             .filter(Boolean);
 
         const newKeys = [
             ...(updates.fileUrl !== undefined
-                ? updates.fileUrl // 새 fileUrl이 있을 경우
+                ? updates.fileUrl
                 : Array.isArray(before.fileUrl)
-                    ? before.fileUrl // 없으면 기존 값 유지
+                    ? before.fileUrl
                     : []),
             ...(updates.imageUrl !== undefined
                 ? [updates.imageUrl]
@@ -174,15 +176,12 @@ router.put("/:id", authenticateToken, ensureObjectId, async (req, res) => {
         ]
             .map(urlToKey)
             .filter(Boolean);
-
         const toDelete = oldKeys.filter((k) => !newKeys.includes(k));
 
         if (toDelete.length) {
             const results = await Promise.allSettled(
                 toDelete.map((k) => deleteObject(k))
             );
-
-            // ⚠️ 실패한 항목 로그 남기기 (전체 실패 방지는 아님)
             const fail = results.filter((r) => r.status === "rejected");
             if (fail.length) {
                 console.warn(

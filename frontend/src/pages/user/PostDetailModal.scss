@@ -1,13 +1,6 @@
-/* 🚨 중요: UploadForm.scss 파일의 내용을 복사한 후, 
-  .Upload-form 선택자를 .Detail-panel로 변경하고 아래 스타일을 추가/수정합니다.
-*/
-
-/* .am-backdrop { ... } // (UploadForm.scss 또는 전역에서 가져옴)
-*/
-
 .am-panel.Detail-panel {
     background-color: rgba(46, 29, 26, 0.7);
-    // 🚨 backdrop-filter: blur(10px); // (제거) .am-backdrop이 담당
+    position: relative;
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #f0e6d8;
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
@@ -26,6 +19,43 @@
 
     &::-webkit-scrollbar {
         display: none;
+    }
+
+    .post-item-actions {
+        position: absolute;
+        top: 2.5rem; // 패딩 값과 동일하게
+        right: 2.5rem; // 패딩 값과 동일하게
+        display: flex;
+        gap: 0.8rem;
+        z-index: 5; // 헤더보다 위에 오도록
+
+        .btn-action {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 3.2rem;
+            height: 3.2rem;
+            padding: 0;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            background-color: rgba(62, 39, 35, 0.6);
+            backdrop-filter: blur(5px);
+            color: #f0e6d8;
+
+            &:hover {
+                transform: scale(1.1);
+            }
+
+            &.edit:hover {
+                background-color: rgba(86, 136, 204, 0.8);
+            }
+
+            &.delete:hover {
+                background-color: rgba(220, 53, 69, 0.8);
+            }
+        }
     }
 
     header {

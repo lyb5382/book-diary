@@ -1,6 +1,7 @@
 import React from 'react'
 import { X } from 'lucide-react'
-import './PostDetailModal.scss' // 🚨 이 SCSS 파일도 생성해야 합니다.
+import { Edit, Trash2 } from 'lucide-react'
+import './PostDetailModal.scss'
 
 // 날짜 포맷팅 헬퍼 (UserPostItem에서 가져옴)
 const formatDate = (dateString) => {
@@ -15,22 +16,37 @@ const formatDate = (dateString) => {
     }
 }
 
-const PostDetailModal = ({ post, onClose }) => {
+const PostDetailModal = ({ post, onClose, onEdit, onDelete }) => {
     // 🚨 item.fileUrl -> post.fileUrl
     const files = Array.isArray(post.fileUrl) ? post.fileUrl : (post?.fileUrl ? [post.fileUrl] : [])
 
     return (
         // 🚨 UploadForm과 동일한 .am-backdrop 사용
         <section className='am-backdrop' onClick={onClose}>
-            {/* 🚨 UploadForm과 동일한 .am-panel 사용 (클래스명 추가) */}
             <div className="am-panel Detail-panel" onClick={(e) => e.stopPropagation()}>
+                <div className="post-item-actions">
+                    <button
+                        className="btn-action edit"
+                        aria-label="수정"
+                        onClick={(e) => { e.stopPropagation(); onEdit?.(post); }}
+                    >
+                        <Edit size={16} />
+                    </button>
+                    <button
+                        className="btn-action delete"
+                        aria-label="삭제"
+                        onClick={(e) => { e.stopPropagation(); onDelete?.(post); }}
+                    >
+                        <Trash2 size={16} />
+                    </button>
+                </div>
+
                 <header>
                     <h2>{post.title}</h2>
                     <p className="sub">{formatDate(post?.createdAt || post?.updateAt)}</p>
                 </header>
 
                 <div className="detail-grid">
-                    {/* 1. 이미지 표시 */}
                     {files?.length > 0 && (
                         <div className="detail-img-wrapper">
                             {files.map((src, idx) => (
@@ -39,7 +55,6 @@ const PostDetailModal = ({ post, onClose }) => {
                         </div>
                     )}
 
-                    {/* 2. 내용 표시 */}
                     {post.content && (
                         <div className="detail-content">
                             <p>{post.content}</p>
@@ -47,7 +62,6 @@ const PostDetailModal = ({ post, onClose }) => {
                     )}
                 </div>
 
-                {/* 3. 닫기 버튼 */}
                 <div className="actions">
                     <button type='button' className="btn ghost" onClick={onClose} aria-label="닫기">
                         <X size={18} />

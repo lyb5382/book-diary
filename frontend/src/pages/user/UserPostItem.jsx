@@ -22,26 +22,6 @@ const UserPostItem = ({ item, onClick, onEdit, onDelete }) => {
 
     return (
         <div className="post-card clickable" onClick={onClick}>
-
-            {/* 4. (신규) 버튼 영역 (카드 내부에 추가) */}
-            <div className="post-item-actions">
-                <button
-                    className="btn-action edit"
-                    aria-label="수정"
-                    // 🚨 5. 버튼 클릭 핸들러 (이벤트 버블링 중단)
-                    onClick={(e) => { e.stopPropagation(); onEdit?.(item); }}
-                >
-                    <Edit size={16} />
-                </button>
-                <button
-                    className="btn-action delete"
-                    aria-label="삭제"
-                    onClick={(e) => { e.stopPropagation(); onDelete?.(item); }}
-                >
-                    <Trash2 size={16} />
-                </button>
-            </div>
-
             <div className="file-card-head">
                 <h3>
                     {item?.title ?? '제목 없음'}
@@ -59,6 +39,24 @@ const UserPostItem = ({ item, onClick, onEdit, onDelete }) => {
             </div>
             <div className="file-card-meta">
                 <time className='file-card-time'>{formatDate(item?.createdAt || item?.updateAt)}</time>
+
+                {/* 🚨 (이동) 버튼 영역을 meta 안으로 이동시킵니다. */}
+                <div className="post-item-actions">
+                    <button
+                        className="btn-action edit"
+                        aria-label="수정"
+                        onClick={(e) => { e.stopPropagation(); onEdit?.(item); }}
+                    >
+                        <Edit size={16} />
+                    </button>
+                    <button
+                        className="btn-action delete"
+                        aria-label="삭제"
+                        onClick={(e) => { e.stopPropagation(); onDelete?.(item); }}
+                    >
+                        <Trash2 size={16} />
+                    </button>
+                </div>
             </div>
         </div>
     )

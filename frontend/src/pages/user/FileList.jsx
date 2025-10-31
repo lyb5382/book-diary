@@ -1,13 +1,11 @@
 import React, { useEffect, useMemo } from 'react'
 import UserPostItem from './UserPostItem'
-import { usePosts } from '../../hooks/usePosts'
+import { PostContext } from '../../context/PostContext'
+import { useContext } from 'react'
 import './FileList.scss'
 
-const FileList = ({ search = '', onPostClick }) => {
-    const { items, loading, load } = usePosts()
-    useEffect(() => {
-        load()
-    }, [load])
+const FileList = ({ search = '', onPostClick, onEdit, onDelete }) => {
+    const { items, loading } = useContext(PostContext)
     const filtered = useMemo(() => {
         const q = search.trim().toLowerCase()
         if (!q) return items
@@ -39,7 +37,7 @@ const FileList = ({ search = '', onPostClick }) => {
     return (
         <div className='post-list'>
             {filtered.map((i) => (
-                <UserPostItem key={i._id} item={i} onClick={() => onPostClick(i)} />
+                <UserPostItem key={i._id} item={i} onClick={() => onPostClick(i)} onEdit={() => onEdit(i)} onDelete={() => onDelete(i)} />
             ))}
         </div>
     )
