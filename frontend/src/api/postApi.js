@@ -34,7 +34,6 @@ export const createPost = async ({ title, content, fileKeys }) => {
         content,
         fileUrl: fileKeys,
     });
-
     return data;
 };
 
@@ -56,8 +55,9 @@ export const fetchPostById = async (id) => {
 
 export const updatePost = async (id, patch) => {
     const payload = { ...patch }
-    if (!patch.fileUrl !== undefined) {
-        payload.fileUrl = toKeyArray(payload.fileUrl)
+    if (payload.fileKeys !== undefined) {
+        payload.fileUrl = toKeyArray(payload.fileKeys);
+        delete payload.fileKeys;
     }
     const { data } = await api.put(`/api/posts/${id}`, payload)
     return data

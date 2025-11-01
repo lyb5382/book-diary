@@ -2,7 +2,7 @@ const {
     S3Client,
     PutObjectCommand,
     GetObjectCommand,
-    // 🚨 1. DeleteBucketCommand 대신 DeleteObjectCommand 사용
+    // 🚨 1. DeleteBucketCommand -> DeleteObjectCommand
     DeleteObjectCommand
 } = require('@aws-sdk/client-s3')
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner')
@@ -35,12 +35,12 @@ async function presignGet(Key, sec = 300) {
     return getSignedUrl(s3, cmd, { expiresIn: sec })
 }
 
-// 🚨 2. 함수명 오타 수정: deletObject -> deleteObject (posts.js와 일치)
+// 🚨 2. 함수명 오타 수정: deletObject -> deleteObject
 async function deleteObject(Key) {
     if (!Bucket) throw new Error('s3 bucket is undefined')
-    // 🚨 3. Key 변수명 수정 및 유효성 검사 강화
+    // 🚨 3. Key 변수명 수정 및 유효성 검사
     if (!Key) throw new Error('Key is required')
-    // 🚨 4. 명령어 수정: DeleteBucketCommand -> DeleteObjectCommand (게시물 삭제)
+    // 🚨 4. 명령어 수정: DeleteBucketCommand -> DeleteObjectCommand
     const cmd = new DeleteObjectCommand({ Bucket, Key })
     await s3.send(cmd)
     console.log(`[s3] Deleted: ${Key}`)

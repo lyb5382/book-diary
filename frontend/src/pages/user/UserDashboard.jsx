@@ -26,26 +26,29 @@ const UserDashboard = () => {
 
     const handleupload = async ({ id, title, content, file, replaceKey, currentKey }) => {
         try {
-            let s3Key = null;
+            let s3Key = null
             if (file) {
                 s3Key = await uploadToS3(file, { replaceKey });
+                console.log('S3 Upload/Replace OK:', s3Key);
             } else if (id && currentKey) {
                 s3Key = currentKey;
+                console.log('S3 Key Keep:', s3Key);
             }
             const payload = {
                 title,
                 content,
                 fileKeys: s3Key ? [s3Key] : []
-            };
+            }
             if (id) {
                 await update(id, payload);
-                console.log('db update ok!!', id);
+                console.log('DB Update OK:', id);
             } else {
                 await add(payload);
-                console.log('db add ok!!');
+                console.log('DB Add OK');
             }
             setOpenUpload(false);
             setEditingPost(null);
+
         } catch (error) {
             console.error('uploaded failed', error);
             alert("업로드/수정 중 오류가 발생했습니다.");
@@ -54,7 +57,8 @@ const UserDashboard = () => {
     const handleAddClick = () => {
         setEditingPost(null);
         setOpenUpload(true);
-    };
+    }
+
     const handleDelete = async (postItem) => {
         if (window.confirm(`'${postItem.title}' 게시물을 정말 삭제하시겠습니까?`)) {
             try {
