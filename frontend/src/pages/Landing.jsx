@@ -8,21 +8,21 @@ const Landing = () => {
             <div className="container">
                 <div className="landing-hero">
                     <h1>📜 Book Diary</h1>
-                    <p className="landing-sub">사진 한 장, 한 줄 메모. 태그 · 검색 · 공유까지.</p>
+                    <p className="landing-sub">모든 기록을 수집하고, 분류하며, 공유하는 당신만의 서재</p>
                     <Link to="/admin/login" className="btn btn-primary">시작하기</Link>
                 </div>
                 <ul className="landing-features">
                     <li>
-                        <h3>빠른 기록</h3>
-                        <p>책 표지 업로드 후 한 줄 메모로 즉시 저장.</p>
+                        <h3>찰나의 감상</h3>
+                        <p>스쳐가는 영감을 한 줄의 문장으로 서재에 기록하세요.</p>
                     </li>
                     <li>
-                        <h3>태그 & 검색</h3>
-                        <p>태그로 묶고 검색으로 바로 찾기.</p>
+                        <h3>기억의 색인</h3>
+                        <p>수많은 기록 속, 원하는 감상을 #태그로 즉시 찾아내세요.</p>
                     </li>
                     <li>
-                        <h3>간단 공유</h3>
-                        <p>공유 링크로 가볍게 전달.</p>
+                        <h3>감상의 전달</h3>
+                        <p>간직하고픈 문장을 가벼운 링크로 공유하세요.</p>
                     </li>
                 </ul>
             </div>
