@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import api from '../api/client' // 🚨 AuthModal의 api client를 import
+import api from '../api/client'
 import './AuthPanel.scss'
 
 const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, requiredRole }) => {

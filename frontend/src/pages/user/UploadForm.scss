@@ -1,20 +1,14 @@
-/* UploadForm.scss */
-
-// .am-backdrop 스타일은 다른 곳(예: AuthModal.scss 또는 전역 스타일)에 정의된 것을 사용
-// backdrop-filter가 적용되도록 .am-backdrop 배경색 확인 필요 (예: rgba(0,0,0,0.5))
-
 .am-panel.Upload-form {
-    // 🚨 (수정) 유리 효과 (Glassmorphism) 적용
-    background-color: rgba(46, 29, 26, 0.559); // 어두운 갈색 (40% 투명도)
+    background-color: rgba(46, 29, 26, 0.559);
     backdrop-filter: blur(1rem);
-    border: 1rem solid rgba(255, 255, 255, 0.1); // 옅은 흰색 테두리
-    color: #f0e6d8; // 밝은 베이지색 텍스트 (테마 통일)
-    box-shadow: 0 .8rem 3.2rem 0 rgba(0, 0, 0, 0.37); // 그림자 조정
+    border: 1rem solid var(--border);
+    color: var(--text);
+    box-shadow: 0 .8rem 3.2rem 0 rgba(0, 0, 0, 0.37);
 
     // 크기 제한 유지
     max-width: 45rem;
     max-height: 85vh;
-    border-radius: var(--radius-l); // 부드러운 모서리 (기존 radius-l 사용)
+    border-radius: var(--radius-l);
 
     overflow-y: auto;
     display: flex;
@@ -27,15 +21,15 @@
         margin-bottom: 0.5rem;
 
         h2 {
-            font-family: 'Cinzel', serif; // 테마 폰트
-            color: #f0e6d8; // 테마 텍스트 색상
+            font-family: 'Cinzel', serif;
+            color: var(--text);
             font-size: 2.4rem;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); // 그림자 추가
+            text-shadow: .1rem .1rem .3rem rgba(0, 0, 0, 0.6);
         }
 
         .sub {
             font-size: 1.4rem;
-            color: #bfae95; // 옅은 색상
+            color: var(--muted);
         }
     }
 
@@ -49,37 +43,33 @@
                 display: block;
                 margin-bottom: 0.5rem;
                 font-size: 1.4rem;
-                color: #bfae95; // 옅은 색상
-                font-family: 'IM Fell DW Pica', serif; // 테마 폰트
-                text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4); // 그림자
+                color: var(--muted);
+                font-family: 'IM Fell DW Pica', serif;
+                text-shadow: .1rem .1rem .1rem rgba(0, 0, 0, 0.4);
             }
 
             input[type="text"],
             textarea {
                 width: 100%;
-                // 🚨 테마 입력창 스타일 (AuthPanel과 유사하게)
                 background: transparent;
                 border: none;
-                border-bottom: 1px solid rgba(240, 230, 216, 0.4); // 옅은 테두리
-                color: #f0e6d8; // 테마 텍스트 색상
+                border-bottom: .1rem solid rgba(240, 230, 216, 0.4);
+                color: var(--text);
                 border-radius: 0;
                 padding: 1rem 0.5rem;
                 font-size: 1.6rem;
-                font-family: 'IM Fell DW Pica', serif; // 테마 폰트
-                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6); // 그림자
+                font-family: 'IM Fell DW Pica', serif;
+                text-shadow: .1rem .1rem .2rem rgba(0, 0, 0, 0.6);
 
                 &::placeholder {
                     color: rgba(191, 174, 149, 0.7);
                     font-style: italic;
                 }
 
-                // placeholder 조정
                 &:focus {
                     outline: none;
-                    border-bottom: 1px solid rgba(240, 230, 216, 0.7);
+                    border-bottom: .1rem solid rgba(240, 230, 216, 0.7);
                 }
-
-                // 포커스 시 테두리 강화
             }
 
             textarea {
@@ -93,22 +83,24 @@
                 display: block;
                 margin-bottom: 1rem;
                 font-size: 1.4rem;
-                color: #bfae95; // 테마 색상 적용
-                // 파일 입력 기본 스타일 사용 + 약간의 조정
-                font-family: sans-serif; // 가독성 폰트
+                color: var(--muted);
+                font-family: sans-serif;
             }
 
-            // 파일 선택 버튼 커스텀 (선택 사항)
             input[type="file"]::file-selector-button {
-                 background-color: rgba(93, 64, 55, 0.5);
-                 color: #f0e6d8;
-                 border: 1px solid rgba(141, 110, 99, 0.5);
-                 padding: 0.5rem 1rem;
-                 border-radius: 0.3rem;
-                 cursor: pointer;
-                 transition: background-color 0.2s ease;
-                 &:hover { background-color: rgba(141, 110, 99, 0.5); }
-             }
+                background-color: rgba(93, 64, 55, 0.5);
+                color: var(--text);
+                border: .1rem solid rgba(141, 110, 99, 0.5);
+                padding: 0.5rem 1rem;
+                border-radius: 0.3rem;
+                cursor: pointer;
+                transition: background-color 0.2s ease;
+
+                &:hover {
+                    background-color: rgba(141, 110, 99, 0.5);
+                }
+            }
+
             .preview-warp {
                 margin-top: 1rem;
                 display: flex;
@@ -119,13 +111,13 @@
                     width: 6rem;
                     height: 6rem;
                     object-fit: cover;
-                    border: 1px solid rgba(255, 255, 255, 0.1); // 테두리 조정
+                    border: .1rem solid var(--border);
                     border-radius: 0.3rem;
                 }
 
                 .file-name {
                     font-size: 1.2rem;
-                    color: #bfae95; // 테마 색상
+                    color: var(--muted);
                     font-family: sans-serif;
                     overflow: hidden;
                     text-overflow: ellipsis;
@@ -142,17 +134,15 @@
         margin-top: 1.5rem;
 
         .btn {
-            // 🚨 (수정) 아이콘 버튼 크기 및 정렬 통일
             padding: .6rem 1.4rem;
-            display: inline-flex; // 아이콘 중앙 정렬 위해 유지
-            justify-content: center; // 아이콘 수평 중앙 정렬
-            align-items: center; // 아이콘 수직 중앙 정렬
-            border-radius: 0.3rem; // 원형 유지
-            border: 1px solid;
-            // font-size 제거 (아이콘 크기로 제어)
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 0.3rem;
+            border: .1rem solid;
             font-family: 'IM Fell DW Pica', serif;
-            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; // box-shadow 추가
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 .2rem .5rem rgba(0, 0, 0, 0.3);
 
             &:hover {
                 transform: translateY(-1px);
@@ -160,7 +150,7 @@
 
             &:active {
                 transform: translateY(0);
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 .1rem .3rem rgba(0, 0, 0, 0.3);
             }
 
             &:disabled {
@@ -170,7 +160,6 @@
                 box-shadow: none;
             }
 
-            // 스핀 애니메이션 유지
             .animate-spin {
                 animation: spin 1s linear infinite;
             }
@@ -187,19 +176,17 @@
         }
 
         .btn.ghost {
-            /* ... (기존 ghost 스타일 유지) ... */
             background: transparent;
             border-color: rgba(240, 230, 216, 0.3);
-            color: #bfae95;
+            color: var(--muted);
 
             &:hover {
                 background-color: rgba(255, 255, 255, 0.05);
-                color: #f0e6d8;
+                color: var(--text);
             }
         }
 
         .btn.primary {
-            /* ... (기존 primary 스타일 유지) ... */
             background-color: var(--primary);
             border-color: rgba(0, 0, 0, 0.3);
             color: var(--primary-contrast);

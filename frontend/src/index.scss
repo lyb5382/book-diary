@@ -41,7 +41,7 @@ body,
 }
 
 body {
-    background: black;
+    background: var(--bg);
     color: var(--text);
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
@@ -81,34 +81,54 @@ ul {
 }
 
 :root {
-    /* ===== Base Tone ===== */
-    --bg: #f9f9f9;
-    --surface: #f9fafb;
-    --surface-alt: #f3f4f6;
-    --text: #111827;
-    --dark-bl: #0f0f0f;
-    --muted: #6b7280;
-    --border: #e5e7eb;
-    /* ===== Brand Colors ===== */
-    --primary: #3E2723;
-    --primary-hover: #4E342E;
-    --primary-contrast: #ffffff;
-    --secondary: #10b981; // emerald tone
-    --secondary-hover: #059669;
-    --accent: #f97316; // orange-500
-    /* ===== Status Colors ===== */
-    --success: #22c55e;
-    --warning: #facc15;
-    --danger: #ef4444;
-    --info: #3b82f6;
-    /* ===== Gradient / Depth ===== */
-    --gradient: linear-gradient(90deg, #239beb 0%, #10b981 100%);
-    --shadow-soft: 0 2px 6px rgba(0, 0, 0, 0.05);
-    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
-    /* ===== Radius & Focus ===== */
-    --radius-l: 1rem;
-    --radius-s: 0.5rem;
-    --focus: #5b9fff;
+    /* ===== Base Tone (Dark Theme) ===== */
+    --bg: #0f0f0f; // body의 기본 배경색 (가장 어두움)
+    --surface: #1f1d1b; // 컴포넌트 표면 (예: App.scss의 .inner 박스)
+    --surface-alt: #3E2723; // 보조 표면 (예: 헤더, 검색창 배경)
+    --text: #f0e6d8; // 기본 텍스트 (제목, 주요 텍스트)
+    --text-content: #d7ccc8; // 본문 텍스트 (p 태그)
+    --muted: #bfae95; // 보조 텍스트 (날짜, placeholder, p.sub 등)
+    --border: rgba(255, 255, 255, 0.1); // 기본 테두리
+    --border-hover: rgba(255, 255, 255, 0.3); // 호버 시 테두리
+
+    /* ===== Brand Colors (유지) ===== */
+    --primary: #3E2723; // 주요 버튼 배경 (예: '시작하기', 'upload')
+    --primary-hover: #4E342E; // 주요 버튼 호버 시 배경
+    --primary-contrast: #ffffff; // 주요 버튼 텍스트 (밝은 색)
+    --secondary: #10b981; // (미사용) 보조 브랜드 색상
+    --secondary-hover: #059669; // (미사용)
+    --accent: #f97316; // (미사용) 강조 색상
+
+    /* ===== Status Colors (유지) ===== */
+    --success: #22c55e; // 성공 상태
+    --warning: #facc15; // 경고 상태
+    --danger: #ef4444; // 오류 텍스트
+    --danger-hover: rgba(220, 53, 69, 0.8); // '삭제' 버튼 호버
+    --info: #3b82f6; // 정보 상태
+    --info-hover: rgba(86, 136, 204, 0.8); // '수정' 버튼 호버
+
+    /* ===== Glassmorphism (유리 효과) ===== */
+    --glass-bg-heavy: rgba(46, 29, 26, 0.7); // 상세 모달 배경 (PostDetailModal)
+    --glass-bg-medium: rgba(46, 29, 26, 0.45); // 게시물 카드 배경 (UserPostItem)
+    --glass-bg-light: rgba(62, 39, 35, 0.3); // 랜딩 페이지 히어로 (Landing.jsx)
+    --glass-bg-actions: rgba(62, 39, 35, 0.6); // 액션 버튼 배경 (수정/삭제 버튼)
+
+    /* ===== Grimoire Theme (로그인 페이지) ===== */
+    --grimoire-bg: #f7f3e8; // 로그인 폼 양피지 배경 (AuthPanel)
+    --grimoire-text: #3e2723; // 로그인 폼 입력 텍스트
+    --grimoire-text-muted: #795548; // 로그인 폼 라벨
+    --grimoire-border: #d7ccc8; // 로그인 폼 구분선
+    --grimoire-border-focus: #5d4037; // 로그인 폼 포커스 시 구분선
+
+    /* ===== Gradient / Depth (수정) ===== */
+    --gradient: linear-gradient(90deg, #4E342E 0%, #8d6e63 100%); // (미사용) 그라데이션
+    --shadow-soft: 0 .4rem 1.2rem rgba(0, 0, 0, 0.3); // 일반 그림자 (예: 버튼)
+    --shadow-medium: 0 .8rem 3.3rem 0 rgba(0, 0, 0, 0.37); // 모달용 그림자
+
+    /* ===== Radius & Focus (유지) ===== */
+    --radius-l: 1rem; // 큰 모서리 둥글기 (예: 모달)
+    --radius-s: 0.5rem; // 작은 모서리 둥글기 (예: 카드, 버튼)
+    --focus: #5b9fff; // 키보드 포커스 시 외곽선
 }
 
 /* 포커스 */
@@ -137,7 +157,7 @@ h3 {
 }
 
 p {
-    font-size: clamp(1.2rem, 1.4vw, 1.8rem);
+    font-size: clamp(1.2rem, 1.4vw, 1.5rem);
     color: var(--text);
 }
 
@@ -251,7 +271,7 @@ code {
     // justify-content: center;
     // align-items: center;
 }
-  
+
 .page-login {
     min-height: 100vh;
     width: 100vw;
@@ -262,20 +282,20 @@ code {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'IM Fell DW Pica', serif; 
-    color: #f0e6d8; 
+    font-family: 'IM Fell DW Pica', serif;
+    color: var(--text);
     position: relative;
     isolation: isolate;
 
     &::before {
         content: '';
         position: absolute;
-        inset: 0; 
-        z-index: -1; 
+        inset: 0;
+        z-index: -1;
         background-image: url('./assets/grimoire_form_overlay.png');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        filter: blur(5px) brightness(0.5); 
+        filter: blur(.5rem) brightness(0.5);
     }
 }

@@ -1,6 +1,6 @@
 .page {
     padding-top: .5rem;
-    // text-align: center;
+    text-align: center;
 
     .inner {
         max-width: 80rem;
@@ -26,7 +26,7 @@
     bottom: 0;
     z-index: -1;
     background-image: url('../src/assets/main_bg.png');
-    background-color: black;
+    background-color: var(--bg);
     background-repeat: no-repeat;
     background-size: contain;
     background-position: top;

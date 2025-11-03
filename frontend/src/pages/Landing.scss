@@ -1,31 +1,20 @@
 .landing {
-    // 🚨 가독성을 위해 전체 텍스트 색상 조정 및 그림자 추가
-    color: #f0e6d8; // 밝은 베이지색 텍스트
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6); // 어두운 그림자
+    color: var(--text);
+    text-shadow: .1rem .1rem .3rem rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
 
     .landing-hero {
-        padding: 4rem 2rem; // 패딩 조정
-        // 🚨 유리 효과 적용
-        background-color: rgba(62, 39, 35, 0.3); // 어두운 갈색 (30% 투명도)
-        backdrop-filter: blur(4px);
-        border: 1px solid rgba(255, 255, 255, 0.1); // 옅은 흰색 테두리
+        padding: 4rem 2rem;
+        background-color: var(--glass-bg-light);
+        backdrop-filter: blur(.4rem);
+        border: .1rem solid var(--border);
         border-radius: var(--radius-l);
         margin-bottom: 3rem;
 
-        // 🚨 부모에서 color를 상속받으므로 제거
-        // color: white; 
-
         h1 {
-            // 필요시 제목 그림자 강화
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-        }
-
-        p {
-            color: #f0e6d8;
-            /* 부모 상속 */
+            text-shadow: .2rem .2rem .5rem rgba(0, 0, 0, 0.7);
         }
 
         .landing-sub {
@@ -33,25 +22,22 @@
         }
 
         .btn.btn-primary {
-            background-color: var(--primary); // #3E2723 가정
+            background-color: var(--primary);
             color: var(--primary-contrast);
             border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            // 🚨 (추가) 전환 효과를 부드럽게
+            box-shadow: 0 .2rem .5rem var(--shadow-soft);
             transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 
-            // 🚨 (신규) Hover 상태 스타일 추가
             &:hover {
-                background-color: var(--primary-hover); // #4E342E 가정 (약간 밝은 갈색)
-                border-color: rgba(255, 255, 255, 0.3); // 테두리 살짝 밝게
-                transform: translateY(-2px); // 살짝 위로 이동
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); // 그림자 강조
+                background-color: var(--primary-hover);
+                border-color: var(--border-hover);
+                transform: translateY(-.2rem);
+                box-shadow: 0 .4rem .8rem rgba(0, 0, 0, 0.4);
             }
 
             &:active {
-                // 눌렀을 때 효과 (기존 버튼 효과 재정의)
                 transform: translateY(0);
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 .1rem .3rem var(--shadow-soft);
             }
         }
     }
@@ -63,15 +49,10 @@
         >li {
             flex: 1;
             padding: 2rem;
-            // 🚨 유리 효과 적용
-            background-color: rgba(62, 39, 35, 0.2); // 히어로보다 약간 더 투명하게
-            backdrop-filter: blur(2px); // 블러 약간 약하게
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background-color: rgba(62, 39, 35, 0.2);
+            backdrop-filter: blur(.2rem);
+            border: .1rem solid rgba(255, 255, 255, 0.08);
             border-radius: var(--radius-s);
-
-            p {
-                color: #f0e6d8;
-            }
         }
     }
 }
