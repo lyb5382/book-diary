@@ -23,4 +23,4 @@ const auditLogSchema = new mongoose.Schema({
 auditLogSchema.index({ createdAt: -1 })
 auditLogSchema.index({ resource: 1, action: 1, createdAt: -1 })
 
-module.exports.mongoose.module('auditLog', auditLogSchema)
+module.exports = mongoose.model('auditLog', auditLogSchema)

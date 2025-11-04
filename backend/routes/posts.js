@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
-// 🚨 1. deleteObject (정상)
 const { presignGet, deleteObject } = require('../src/s3')
 const mongoose = require('mongoose')
 const Post = require('../models/Posts')
@@ -17,7 +16,7 @@ function joinS3Url(base, key) {
 function urlToKey(u) {
     if (!u) return ''
     const s = String(u)
-    if (!/^https?:\/\//i.test(s)) return s // 이미 key
+    if (!/^https?:\/\//i.test(s)) return s
     const base = String(S3_BASE_URL || '').replace(/\/+$/, '')
     return s.startsWith(base + '/') ? s.slice(base.length + 1) : s
 }
@@ -39,10 +38,7 @@ const toArray = (val) => {
 const authenticateToken = (req, res, next) => {
     let token = null
     const h = req.headers.authorization
-    // 🚨 (수정) h가 없을 경우를 대비한 방어 코드
-    if (h && h.toLowerCase().startsWith('bearer')) {
-        token = h.slice(7).trim()
-    }
+    if (h && h.toLowerCase().startsWith('bearer')) token = h.slice(7).trim()
     if (req.cookies?.token) token = req.cookies.token
     if (!token) return res.status(401).json({ message: '토큰 없음' })
     try {
@@ -53,9 +49,7 @@ const authenticateToken = (req, res, next) => {
     }
 }
 const ensureObjectId = (req, res, next) => {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-        return res.status(400).json({ message: '잘못된 id' })
-    }
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(400).json({ message: '잘못된 id' })
     next()
 }
 

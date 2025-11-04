@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const User = require('../models/User')
 const { authenticateToken } = require('../middlewares/auth')
+const GENERIC_ERROR_MESSAGE = "이메일 또는 비밀번호가 일치하지 않습니다."
+const LOCKOUT_DURATION_MS = 10 * 60 * 1000
 
 function makeToken(u) {
     return jwt.sign(
@@ -33,24 +35,42 @@ router.post('/register', async (req, res) => {
 // 로긴
 router.post('/login', async (req, res) => {
     try {
-        const { email, password } = req.body
-        if (!email || !password) return res.status(400).json({ message: 'email, 비밀번호 필수 입력' })
-        const user = await User.findOne({ email: email.toLowerCase(), isActive: true })
-        if (!user) return res.status(400).json({ message: '존재하지 않는 email' })
+        const email = String(req.body?.email || '').toLowerCase()
+        const password = String(req.body?.password ?? '')
+        if (!email || !password) return res.status(400).json({ message: '이메일과 비밀번호는 필수입니다.' })
+        const user = await User.findOne({ email: email }).select('+passwordHash')
+        if (!user) return res.status(401).json({ message: GENERIC_ERROR_MESSAGE })
+        if (!user.isActive && (user.failedLoginAttemp ?? 0) >= 5) {
+            const last = user.lastLoginAttemp ? user.lastLoginAttemp.getTime() : 0
+            const passed = Date.now() - last
+            if (passed > LOCKOUT_DURATION_MS) {
+                user.isActive = true
+                user.failedLoginAttemp = 0
+                user.lastLoginAttemp = null
+                await user.save()
+            }
+        }
+        if (!user.isActive) return res.status(403).json({ message: '계정이 잠겨있습니다. 관리자에게 문의하십시오.' })   
         const passwd = await user.comparePasswd(password)
         if (!passwd) {
-            user.loginAttemp += 1
-            if (user.loginAttemp >= 5) {
+            user.failedLoginAttemp += 1
+            user.lastLoginAttemp = new Date()
+            let statusCode = 401
+            let responseMessage = `이메일 또는 비밀번호가 틀렸습니다. (틀린 횟수: ${user.loginAttemp}, 5회 이상 시 계정 잠금)`
+            if (user.failedLoginAttemp >= 5) {
                 user.isActive = false
-                await user.save()
-                return res.status(403).json({ message: '계정 잠김' })
+                responseMessage = `계정 잠김`
+                statusCode = 403
             }
             await user.save()
-            return res.status(400).json({ message: `email or 비밀번호 틀림, 틀린 횟수: ${user.loginAttemp}, 5회 이상 시 계정 잠금` })
+            return res.status(statusCode).json({
+                message: responseMessage,
+                failedLoginAttemp: user.failedLoginAttemp
+            })
         }
         const updated = await User.findByIdAndUpdate(
             user._id,
-            { $set: { isLogined: true, loginAttemp: 0 } },
+            { $set: { failedLoginAttemp: 0, lastLoginAttemp: new Date() } },
             { new: true }
         )
         if (!updated) return res.status(500).json({ message: '로그인 갱신 실패' })
@@ -62,9 +82,14 @@ router.post('/login', async (req, res) => {
             path: "/",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
-        return res.status(200).json({ user: updated.safeJSON(), token, loginAttemp: 0 })
+        return res.status(200).json({
+            user: updated.safeJSON(),
+            token,
+            failedLoginAttemp: updated.failedLoginAttemp
+        })
     } catch (error) {
-        return res.status(500).json({ message: 'failed', error: error.message })
+        console.error('Login Route Error:', error)
+        return res.status(500).json({ message: '서버 내부 오류가 발생했습니다.' })
     }
 })
 
