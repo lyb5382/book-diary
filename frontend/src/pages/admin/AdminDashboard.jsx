@@ -47,7 +47,7 @@ const AdminDashboard = () => {
     };
 
     useEffect(() => {
-        fetchData(); // 분리된 함수 호출
+        fetchData();
     }, []);
 
     useEffect(() => {
@@ -66,13 +66,15 @@ const AdminDashboard = () => {
             let s3Key = null
             if (file) {
                 s3Key = await uploadToS3(file, { replaceKey });
+                console.log('S3 Upload/Replace OK:', s3Key);
             } else if (id && currentKey) {
                 s3Key = currentKey;
+                console.log('S3 Key Keep:', s3Key);
             }
             const payload = {
                 title,
                 content,
-                fileKeys: s3Key ? [s3Key] : []
+                fileUrl: s3Key ? [s3Key] : []
             }
 
             if (id) {
@@ -81,7 +83,7 @@ const AdminDashboard = () => {
                 await api.post('/api/admin/posts', payload);
             }
 
-            await fetchData(); // [수정] 목록 새로고침
+            await fetchData();
             setOpenUpload(false);
             setEditingPost(null);
 
@@ -99,7 +101,7 @@ const AdminDashboard = () => {
                 if (selectedPost?._id === postItem._id) {
                     setSelectedPost(null);
                 }
-                await fetchData(); // [수정] 목록 새로고침
+                await fetchData();
             } catch (error) {
                 console.error("삭제 실패:", error);
                 alert("삭제에 실패했습니다. (백엔드 API 확인 필요)");
@@ -152,7 +154,7 @@ const AdminDashboard = () => {
                 <div className="table-header">
                     <h3>게시물 관리 (최신 20개)</h3>
                 </div>
-                
+
                 <table>
                     <thead>
                         <tr>
@@ -171,12 +173,18 @@ const AdminDashboard = () => {
                                         {post.title}
                                     </td>
                                     <td>
-                                        <span className={`status-badge status-${post.status}`}>
-                                            {post.status}
+                                        <span className={`status-badge status-${post.status || 'pending'}`}>
+                                            {post.status || 'pending'}
                                         </span>
                                     </td>
-                                    <td>{post.fileUrl ? <a href={post.fileUrl} target="_blank" rel="noopener noreferrer">보기</a> : '없음'}</td>
-                                    <td>{new Date(post.upatedAt || post.createdAt).toLocaleString('ko-KR')}</td>
+                                    <td>
+                                        {post.fileUrl && post.fileUrl.length > 0 ? (
+                                            <a href={post.fileUrl[0]} target="_blank" rel="noopener noreferrer">보기</a>
+                                        ) : ('없음')}
+                                    </td>
+                                    <td>
+                                        {new Date(post.upatedAt || post.createdAt).toLocaleString('ko-KR')}
+                                    </td>
                                     <td>
                                         <button className="btn-action edit" onClick={() => handleEdit(post)}>수정</button>
                                         <button className="btn-action delete" onClick={() => handleDelete(post)}>삭제</button>

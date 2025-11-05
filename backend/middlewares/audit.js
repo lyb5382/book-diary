@@ -1,4 +1,4 @@
-module.exprots = ({ resource, action, getTargetId, getDiff }) => (req, res, next) => {
+module.exports = ({ resource, action, getTargetId, getDiff }) => (req, res, next) => {
     res.on('finish', async () => {
         if (res.statusCode >= 200 && res.statusCode < 400) {
             try {

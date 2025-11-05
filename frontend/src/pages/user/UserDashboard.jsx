@@ -37,7 +37,7 @@ const UserDashboard = () => {
             const payload = {
                 title,
                 content,
-                fileKeys: s3Key ? [s3Key] : []
+                fileUrl: s3Key ? [s3Key] : []
             }
             if (id) {
                 await update(id, payload);

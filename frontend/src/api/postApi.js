@@ -28,11 +28,11 @@ export const uploadToS3 = async (file, opts = {}) => {
     return key;
 };
 
-export const createPost = async ({ title, content, fileKeys }) => {
+export const createPost = async ({ title, content, fileUrl }) => {
     const { data } = await api.post("/api/posts", {
         title,
         content,
-        fileUrl: fileKeys,
+        fileUrl: fileUrl,
     });
     return data;
 };
@@ -55,9 +55,9 @@ export const fetchPostById = async (id) => {
 
 export const updatePost = async (id, patch) => {
     const payload = { ...patch }
-    if (payload.fileKeys !== undefined) {
-        payload.fileUrl = toKeyArray(payload.fileKeys);
-        delete payload.fileKeys;
+    if (payload.fileUrl !== undefined) {
+        payload.fileUrl = toKeyArray(payload.fileUrl);
+        delete payload.fileUrl;
     }
     const { data } = await api.put(`/api/posts/${id}`, payload)
     return data
