@@ -1,6 +1,7 @@
 .admin-dashboard {
     width: 100%;
-    max-width: 1200px;
+    // 🚨 (수정) 120rem -> 100rem으로 최대 너비 축소
+    max-width: 120rem;
     margin: 0 auto;
     padding: 2rem;
     color: var(--text);
@@ -9,7 +10,8 @@
 
 .dashboard-header {
     display: flex;
-    justify-content: space-between;
+    // 🚨 (수정) space-between -> center
+    justify-content: center;
     align-items: center;
     padding: 1.5rem 2rem;
     margin-bottom: 2rem;
@@ -19,159 +21,51 @@
     border: .1rem solid var(--border);
 
     h2 {
-        font-size: 3.2rem;
+        font-size: 2.8rem;
         color: var(--text);
-        margin: 0;
-    }
-
-    .btn.primary {
-        background: var(--primary);
-        color: var(--primary-contrast);
-        padding: 0.6rem 1.2rem;
-        border: none;
-        border-radius: var(--radius-s);
-        font-weight: bold;
-        cursor: pointer;
-
-        &:hover {
-            background: var(--primary-hover);
-        }
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+        flex-grow: 1;
+        text-align: center;
+        // 🚨 (제거) 불필요한 margin-left 제거
+        // margin-left: 10rem; 
     }
 }
 
-.posts-table {
+// 🚨 (수정) .posts-table 래퍼 제거. .stats-grid를 최상위로
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: 2rem;
     padding: 2rem;
+    margin-bottom: 2rem;
+
     background: var(--glass-bg-medium);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
     border-radius: var(--radius-s);
     border: .1rem solid var(--border);
-
-    .stats-grid {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        gap: 5rem;
-        padding: 1rem 0 0 0;
-        margin-bottom: 5rem;
-        height: auto;
-    }
-
-    .stat-card {
-        h4 {
-            font-size: 2rem;
-            color: var(--muted);
-            margin-bottom: 0.8rem;
-        }
-
-        p {
-            font-size: 1.75rem;
-            color: var(--primary-contrast);
-            font-weight: bold;
-        }
-    }
-
-    .table-header {
-        margin-bottom: 3.5rem;
-        text-align: center;
-    }
-
-    h3 {
-        font-size: 1.8rem;
-        color: var(--text);
-        margin: 0;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        text-align: left;
-        font-size: 1.2rem;
-
-        th,
-        td {
-            padding: 1.2rem 1.5rem;
-            border-bottom: .1rem solid var(--border);
-        }
-
-        th {
-            background-color: rgba(0, 0, 0, 0.2);
-            color: var(--text);
-            font-weight: bold;
-        }
-
-        td {
-            color: var(--text-content);
-            vertical-align: middle;
-
-            &.post-title {
-                cursor: pointer;
-
-                &:hover {
-                    color: var(--text);
-                }
-            }
-
-            a {
-                color: var(--info);
-                text-decoration: none;
-
-                &:hover {
-                    text-decoration: underline;
-                }
-            }
-
-            .btn-action {
-                font-size: 0.9rem;
-                background: none;
-                border: none;
-                padding: .4rem .8rem;
-                cursor: pointer;
-                border-radius: .4rem;
-
-                &.edit {
-                    color: var(--info);
-
-                    &:hover {
-                        background: var(--info-hover);
-                        color: #fff;
-                    }
-                }
-
-                &.delete {
-                    color: var(--danger);
-
-                    &:hover {
-                        background: var(--danger-hover);
-                        color: #fff;
-                    }
-                }
-            }
-        }
-
-        tbody tr:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-    }
+    box-shadow: var(--shadow-soft);
+    height: auto;
 }
 
-.status-badge {
-    padding: .4rem 1rem;
-    border-radius: 1.2rem;
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-transform: capitalize;
-    color: var(--primary-contrast);
+// 🚨 (수정) .stat-card를 최상위로
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
 
-    &.status-pending {
-        background-color: var(--warning);
-        color: #333;
+    h4 {
+        font-size: 1.8rem;
+        color: var(--muted);
+        margin-bottom: 0.8rem;
     }
 
-    &.status-approved {
-        background-color: var(--success);
-    }
-
-    &.status-rejected {
-        background-color: var(--danger);
+    p {
+        font-family: 'Cinzel', serif;
+        font-size: 2.4rem;
+        color: var(--text);
+        font-weight: bold;
+        margin: 0;
     }
 }

@@ -7,6 +7,13 @@ import Header from './components/Header'
 import ProtectRoute from './components/ProtectRoute'
 import UserDashboard from './pages/user/UserDashboard'
 import AdminDashboard from './pages/admin/adminDashboard'
+import AdminLayout from './components/AdminLayout'
+import AdminNav from './components/AdminNav'
+import AdminFilter from './components/AdminFilter'
+import AdminPosts from './pages/admin/AdminPosts'
+import AdminPostsList from './components/AdminPostsList'
+import AdminUsers from './pages/admin/AdminUsers'
+import AdminUserList from './components/AdminUserList'
 import { PostProvider } from './context/PostProvider'
 import { fetchMe as apiFetchMe, logout as apiLogout, saveAuthToStorage, clearAuthStorage } from "./api/client"
 
@@ -106,8 +113,12 @@ function App() {
               />
             }
           >
-            <Route index element={<Navigate to="/admin/dashboard" replace />} />
-            <Route path='dashboard' element={<AdminDashboard />} />
+            <Route element={<AdminLayout />}>
+              <Route index element={<Navigate to="/admin/dashboard" replace />} />
+              <Route path='dashboard' element={<AdminDashboard />} />
+              <Route path='posts' element={<AdminPosts />} />
+              <Route path='users' element={<AdminUsers />} />
+            </Route>
           </Route>
           <Route path='*' element={<Navigate to="/" replace />} />
         </Routes>
