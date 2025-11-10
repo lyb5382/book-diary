@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { fetchPosts, fetchPost } from '../../api/adminApi'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import { fetchPosts, fetchPost, deletePost, createPost } from '../../api/adminApi'
 import { uploadToS3 } from '../../api/postApi'
 import api from '../../api/client'
 import AdminFilter from '../../components/AdminFilter'
@@ -7,33 +7,57 @@ import AdminPostsList from '../../components/AdminPostsList'
 import UploadForm from '../user/UploadForm'
 import PostDetailModal from '../user/PostDetailModal'
 import './AdminDashboard.scss'
+import { getUserId } from '../../util/getUserId'
 
 const AdminPosts = () => {
-    const [list, setList] = useState([])
-    const [query, setQuery] = useState({ page: 1, size: 20, status: '', q: '', user: '' })
+    // 🚨 6. (수정) items: 서버 원본 데이터, query: 필터링용 state
+    const [items, setItems] = useState([]);
+    const [query, setQuery] = useState({ q: "", user: "", status: "" });
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
     const [openUpload, setOpenUpload] = useState(false)
     const [selectedPost, setSelectedPost] = useState(null)
     const [editingPost, setEditingPost] = useState(null)
 
+    // 🚨 7. (수정) loadPosts는 이제 query에 의존하지 않고, 전체 데이터를 1회만 로드
     const loadPosts = useCallback(async () => {
         setLoading(true)
         setError('')
         try {
-            const items = await fetchPosts(query)
-            setList(items)
+            // 🚨 서버에서 모든 데이터를 가져옴 (query 제거)
+            const res = await fetchPosts()
+            setItems(res) // 🚨 items에 원본 저장
         } catch (error) {
             console.error('게시글 불러오기 실패', error)
             setError('게시글을 불러오는데 실패했습니다.')
         } finally {
             setLoading(false)
         }
-    }, [query])
+    }, []) // 🚨 8. (수정) 의존성 배열 비움
 
     useEffect(() => {
         loadPosts()
     }, [loadPosts])
+
+    // 🚨 9. (신규) 강사님 코드 기반 클라이언트 필터링 로직
+    const filteredList = useMemo(() => {
+        const q = query.q.trim().toLowerCase();
+        const user = query.user.replace(/\s+/g, "").toLowerCase();
+        const status = query.status.trim().toLowerCase();
+
+        // items(원본)를 필터링
+        return items.filter((it) => {
+            const title = String(it.title ?? "").toLowerCase();
+            const uid = getUserId(it.user); // 헬퍼 함수 사용
+            const st = String(it.status ?? "").toLowerCase();
+
+            const matchTitle = q ? title.includes(q) : true;
+            const matchUser = user ? uid.includes(user) : true;
+            const matchStatus = status ? st === status : true;
+
+            return matchTitle && matchUser && matchStatus;
+        });
+    }, [items, query]);
 
     // 모달 관리 useEffect (이관)
     useEffect(() => {
@@ -59,9 +83,9 @@ const AdminPosts = () => {
             if (id) {
                 await fetchPost(id, payload); // adminApi.fetchPost 사용
             } else {
-                await api.post('/api/admin/posts', payload)
+                await createPost(payload)
             }
-            loadPosts() // 목록 새로고침
+            loadPosts()
             setOpenUpload(false)
             setEditingPost(null)
         } catch (error) {
@@ -73,9 +97,9 @@ const AdminPosts = () => {
     const handleDelete = async (postItem) => {
         if (window.confirm(`'${postItem.title}' 게시물을 정말 삭제하시겠습니까?`)) {
             try {
-                await api.delete(`/api/admin/posts/${postItem._id}`)
+                await deletePost(postItem._id)
                 if (selectedPost?._id === postItem._id) setSelectedPost(null)
-                loadPosts() // 목록 새로고침
+                loadPosts()
             } catch (error) {
                 console.error("삭제 실패:", error)
                 alert("삭제에 실패했습니다.")
@@ -100,7 +124,7 @@ const AdminPosts = () => {
         setSelectedPost(postItem)
     }
     const handleQueryChange = (newQuery) => { // (이관)
-        setQuery((prev) => ({ ...prev, ...newQuery, page: 1 }))
+        setQuery((prev) => ({ ...prev, ...newQuery }))
     }
 
     if (error) {
@@ -117,11 +141,12 @@ const AdminPosts = () => {
             </header>
 
             {/* 🚨 (신규) 필터 컴포넌트 추가 */}
-            <AdminFilter onQueryChange={handleQueryChange} />
+            <AdminFilter value={query} onChange={handleQueryChange} />
 
             {/* 🚨 (이관) 테이블 -> AdminPostsList 컴포넌트로 대체 */}
             <AdminPostsList
-                posts={list} // 🚨 list를 posts prop으로 전달
+                // 🚨 12. (수정) list -> filteredList 전달
+                posts={filteredList}
                 loading={loading}
                 onPostClick={handlePostClick}
                 onEdit={handleEdit}

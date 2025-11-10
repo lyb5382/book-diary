@@ -32,3 +32,13 @@ export const fetchUser = async (id, patch) => {
     const { data } = await api.patch(`/api/admin/users/${id}`, patch)
     return data
 }
+
+export const deletePost = async (id) => {
+    const { data } = await api.delete(`/api/admin/posts/${id}`)
+    return data
+}
+
+export const createPost = async (payload) => {
+    const { data } = await api.post('/api/admin/posts', payload)
+    return data
+}

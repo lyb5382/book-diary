@@ -69,3 +69,136 @@
         margin: 0;
     }
 }
+
+.posts-table {
+    padding: 2rem;
+    background: var(--glass-bg-medium); // (rgba(46, 29, 26, 0.45))
+    backdrop-filter: blur(8px);
+    border-radius: var(--radius-s);
+    border: .1rem solid var(--border);
+    box-shadow: var(--shadow-soft);
+    margin-top: 2rem; // 🚨 필터와의 간격
+
+    .table-header {
+        margin-bottom: 2rem;
+        text-align: center;
+        
+    }
+
+    h3 {
+        font-size: 2.2rem;
+        color: var(--text);
+        margin: 0;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 1.4rem; // 🚨 가독성을 위해 폰트 크기 조정
+        font-family: 'MapoFlowerIsland', sans-serif;
+
+        th,
+        td {
+            padding: 1.2rem 1.5rem;
+            border-bottom: .1rem solid var(--border);
+        }
+
+        th {
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--text);
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+
+        td {
+            color: var(--text-content); // (#d7ccc8)
+            vertical-align: middle;
+
+            &.post-title {
+                cursor: pointer;
+                font-weight: bold;
+                color: var(--text); // 제목은 밝게
+
+                &:hover {
+                    color: var(--accent);
+                }
+            }
+
+            a {
+                color: var(--info);
+                text-decoration: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
+            .btn-action {
+                font-size: 1.3rem;
+                background: none;
+                border: none;
+                padding: .4rem .8rem;
+                cursor: pointer;
+                border-radius: .4rem;
+                font-family: sans-serif;
+                font-weight: bold;
+                transition: background-color 0.2s ease, color 0.2s ease;
+
+                &.edit {
+                    color: var(--info);
+
+                    &:hover {
+                        background: var(--info-hover);
+                        color: #fff;
+                    }
+                }
+
+                &.delete {
+                    color: var(--danger);
+
+                    &:hover {
+                        background: var(--danger-hover);
+                        color: #fff;
+                    }
+                }
+            }
+        }
+
+        tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+    }
+}
+
+// 🚨 상태 뱃지 스타일
+.status-badge {
+    padding: .4rem 1rem;
+    border-radius: 1.2rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    color: var(--primary-contrast);
+    font-family: sans-serif;
+
+    &.status-pending {
+        background-color: var(--warning);
+        color: #333; // 어두운 텍스트
+    }
+
+    &.status-approved {
+        background-color: var(--success);
+    }
+
+    &.status-rejected {
+        background-color: var(--danger);
+    }
+
+    &.status-hidden {
+        // (숨김 상태 추가)
+        background-color: var(--muted);
+        color: var(--text);
+    }
+}

@@ -1,0 +1,51 @@
+/* AdminFilter.scss (신규) */
+
+.admin-filter {
+    display: flex;
+    flex-wrap: wrap; // 화면 작아지면 줄바꿈
+    gap: 1.5rem; // 필터 간 간격
+    align-items: center;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+
+    // 유리창 효과 적용
+    background: var(--glass-bg-medium);
+    backdrop-filter: blur(6px);
+    border-radius: var(--radius-s);
+    border: .1rem solid var(--border);
+    font-family: 'MapoFlowerIsland', sans-serif;
+    input[type="text"],
+    select {
+        flex-grow: 1; // 남은 공간 차지
+        min-width: 15rem; // 최소 너비
+        font-family: 'MapoFlowerIsland', sans-serif;
+        font-size: 1.4rem;
+        color: var(--text);
+
+        // 🚨 (수정) 테마에 맞는 입력창 스타일
+        background-color: rgba(0, 0, 0, 0.2); // 어두운 입력창 배경
+        border: .1rem solid var(--border);
+        border-radius: var(--radius-s);
+        padding: 0.8rem 1.2rem;
+
+        &::placeholder {
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        &:focus {
+            outline: none;
+            border-color: var(--border-hover); // 포커스 시 테두리
+        }
+    }
+
+    select {
+        flex-grow: 0; // Select는 꽉 채우지 않음
+
+        // 드롭다운 옵션 (시스템 기본값을 따르지만, 색상 지정)
+        option {
+            color: #000000;
+            background: #ffffff;
+        }
+    }
+}

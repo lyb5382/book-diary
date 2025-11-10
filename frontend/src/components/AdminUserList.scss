@@ -1,0 +1,183 @@
+.admin-list-container {
+    padding: 2rem;
+    background: var(--glass-bg-medium); // 유리창 배경
+    backdrop-filter: blur(8px);
+    border-radius: var(--radius-s);
+    border: .1rem solid var(--border);
+    box-shadow: var(--shadow-soft);
+    margin-top: 2rem; // 필터와의 간격
+    overflow-x: auto; // 내용이 길면 가로 스크롤
+}
+
+// 🚨 1. (수정) <ul> -> <table>
+.admin-list {
+    width: 100%;
+    min-width: 70rem; // 최소 너비
+    border-collapse: collapse; // 🚨 테이블 테두리 한 줄로
+    font-family: 'HancomMalrangmalrang', sans-serif; // 가독성 폰트
+    font-size: 1.4rem;
+
+    // 🚨 2. (수정) <li> -> <tr>
+    tr {
+        border-bottom: .1rem solid var(--border);
+        transition: background-color 0.2s ease;
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+    }
+
+    // 🚨 3. (수정) 헤더 행 (<thead>)
+    thead tr {
+        background-color: rgba(0, 0, 0, 0.2);
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        th {
+            color: var(--text);
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            padding: 1rem 1.5rem;
+            text-align: center;
+
+            // 🚨 (신규) 세로 정렬 추가
+            vertical-align: middle;
+        }
+    }
+
+    // 🚨 4. (수정) 데이터 행 (<tbody>)
+    tbody tr {
+        color: var(--text-content);
+
+        td {
+            padding: 1.2rem 1.5rem;
+            vertical-align: middle; // (유지)
+            white-space: nowrap;
+
+            // 🚨 (수정) 컬럼 너비 지정 방식 변경
+            // (개별 지정 대신, 필요한 컬럼만 지정)
+
+            &:nth-child(1) {
+                width: 4rem;
+            }
+
+            &:nth-child(2) {
+                width: 20%;
+            }
+
+            // ID (신규)
+            &:nth-child(3) {
+                width: 25%;
+            }
+
+            // 이메일 (좌측 정렬)
+            &:nth-child(4) {
+                width: 10%;
+            }
+
+            // 닉네임
+            &:nth-child(5) {
+                width: 8rem;
+            }
+
+            // 권한
+            &:nth-child(6) {
+                width: 8rem;
+            }
+
+            // 상태
+            &:nth-child(7) {
+                width: 15%;
+            }
+
+            // 가입일
+            &:nth-child(8) {
+                width: 18rem;
+            }
+
+            // 작업
+        }
+    }
+
+    // "데이터 없음" 메시지
+    .no-data {
+        td {
+            // 🚨 <td> 태그 대상
+            text-align: center;
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        &:hover {
+            // 호버 효과 제거
+            background-color: transparent;
+        }
+    }
+
+    // 액션 버튼
+    .list-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-start;
+
+        .btn-action {
+            font-size: 1.3rem;
+            background: none;
+            border: none;
+            padding: .4rem .8rem;
+            cursor: pointer;
+            border-radius: .4rem;
+            font-weight: bold;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            font-family: 'HancomMalrangmalrang', sans-serif;
+
+            &.role {
+                // 권한 버튼
+                color: var(--info);
+
+                &:hover {
+                    background: var(--info-hover);
+                    color: #fff;
+                }
+            }
+
+            &.lock {
+                // 잠금 버튼
+                color: var(--warning);
+
+                &:hover {
+                    background: var(--danger-hover); // 붉은색 계열
+                    color: #fff;
+                }
+            }
+        }
+    }
+}
+
+// 🚨 .status-badge (기존과 동일, 전역으로 옮기는 것 권장)
+.status-badge {
+    padding: .4rem 1rem;
+    border-radius: 1.2rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    color: var(--primary-contrast);
+    font-family: 'HancomMalrangmalrang', sans-serif;
+    display: inline-block;
+
+    &.status-approved {
+        background-color: var(--success);
+    }
+
+    &.status-rejected {
+        background-color: var(--muted);
+        color: var(--text);
+    }
+}
