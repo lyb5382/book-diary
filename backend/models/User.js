@@ -4,9 +4,11 @@ const bcrypt = require('bcrypt')
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 const userSchema = new mongoose.Schema({
-    email: { type: String, required: true, lowercase: true, trim: true, match: [EMAIL_REGEX, '유효 이메일'], unique: true },
+    email: { type: String, required: true, lowercase: true, trim: true, match: [EMAIL_REGEX, '유효 이메일'], unique: true, require: function () { return !this.kakaoId } },
     passwordHash: { type: String, required: true, select: false },
     displayName: { type: String, trim: true, default: '' },
+    provider: { type: String, enum: ['local', 'kakao'], default: 'local', index: true },
+    kakaoId: { type: String, index: true, unique: true, sparse: true },
     role: { type: String, enum: ['user', 'admin'], default: 'user', index: true },
     isActive: { type: Boolean, default: true },
     lastLoginAttemp: { type: Date, default: 0 },

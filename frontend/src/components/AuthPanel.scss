@@ -72,7 +72,7 @@
             padding: 2rem 1.5rem;
             border-radius: 2rem;
             width: 20%;
-            top:40%;
+            top: 40%;
             left: 30%;
 
             .input-group {
@@ -167,7 +167,7 @@
 
     .grimoire-messages {
         position: absolute;
-        bottom: 14%;
+        bottom: 5%;
         left: 5.5%;
         width: 36%;
         text-align: center;
@@ -191,6 +191,50 @@
         .am-subtle {
             font-size: 1.2rem;
             color: var(--grimoire-text-muted);
+        }
+    }
+
+    .social-login-area {
+        position: absolute;
+        width: 36%; // 폼과 동일한 너비
+        left: 35%; // 폼과 동일한 위치
+        bottom: 14%; // 🚨 에러 메시지 위 (위치 조정 필요)
+        z-index: 10;
+
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        // (선택 사항: '소셜 로그인' 구분선)
+        // &::before {
+        //     content: '또는';
+        //     color: var(--grimoire-text-muted);
+        //     font-size: 1.2rem;
+        //     text-align: center;
+        //     margin-bottom: 0.5rem;
+        // }
+
+        .btn-kakao {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            width: 80%;
+            padding: 1.2rem 1rem; // 버튼 크기
+            border: none;
+            border-radius: var(--radius-s);
+            background-color: #c8b508; // 카카오 공식 색상
+            color: #191919; // 카카오 공식 텍스트 색상
+            font-size: 1.5rem;
+            font-family: 'HancomMalrangmalrang', sans-serif; // 가독성 폰트
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+
+            &:hover {
+                background-color: #91753e;
+                box-shadow: var(--shadow-soft);
+            }
         }
     }
 

@@ -3,9 +3,11 @@ const router = express.Router()
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const User = require('../models/User')
+const passport = require('../config/passport')
 const { authenticateToken } = require('../middlewares/auth')
 const GENERIC_ERROR_MESSAGE = "이메일 또는 비밀번호가 일치하지 않습니다."
 const LOCKOUT_DURATION_MS = 10 * 60 * 1000
+const front = process.env.FRONT_ORIGIN
 
 function makeToken(u) {
     return jwt.sign(
@@ -27,7 +29,18 @@ router.post('/register', async (req, res) => {
         const validRoles = ['user', 'admin']
         const safeRole = validRoles.includes(role) ? role : 'user'
         const user = await User.create({ email, displayName, passwordHash, role: safeRole })
-        res.status(201).json({ user: user.safeJSON() })
+        const token = makeToken(user)
+        res.cookie('token', token, {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production",
+            path: "/",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+        res.status(201).json({
+            user: user.safeJSON(),
+            token: token
+        })
     } catch (error) {
         res.status(404).json({ message: 'failed', error: error.message })
     }
@@ -50,7 +63,7 @@ router.post('/login', async (req, res) => {
                 await user.save()
             }
         }
-        if (!user.isActive) return res.status(403).json({ message: '계정이 잠겨있습니다. 관리자에게 문의하십시오.' })   
+        if (!user.isActive) return res.status(403).json({ message: '계정이 잠겨있습니다. 관리자에게 문의하십시오.' })
         const passwd = await user.comparePasswd(password)
         if (!passwd) {
             user.failedLoginAttemp += 1
@@ -91,6 +104,27 @@ router.post('/login', async (req, res) => {
         console.error('Login Route Error:', error)
         return res.status(500).json({ message: '서버 내부 오류가 발생했습니다.' })
     }
+})
+
+// 카카오
+router.get('/kakao', passport.authenticate('kakao'))
+
+router.get('/kakao/callback', (req, res, next) => {
+    passport.authenticate('kakao', { session: false },
+        async (err, user, info) => {
+            if (err) {
+                console.error('kakao error', err)
+                return res.status(500).json({ message: "카카오 인증 에러" })
+            }
+            if (!user) {
+                console.warn('카카오 로그인 실패', info)
+                return res.redirect(`${FRONT_ORIGIN}/admin/login?error=kakao`)
+            }
+            const token = makeToken(user)
+            const redirectUrl = `${FRONT_ORIGIN}/oauth/kakao?token=${token}`
+            console.log('kakao redirect', redirectUrl)
+            return res.redirect(redirectUrl)
+        })(req, res, next)
 })
 
 router.use(authenticateToken)

@@ -8,12 +8,9 @@ import ProtectRoute from './components/ProtectRoute'
 import UserDashboard from './pages/user/UserDashboard'
 import AdminDashboard from './pages/admin/adminDashboard'
 import AdminLayout from './components/AdminLayout'
-import AdminNav from './components/AdminNav'
-import AdminFilter from './components/AdminFilter'
 import AdminPosts from './pages/admin/AdminPosts'
-import AdminPostsList from './components/AdminPostsList'
 import AdminUsers from './pages/admin/AdminUsers'
-import AdminUserList from './components/AdminUserList'
+import kakaoCallback from './pages/kakaoCallback'
 import { PostProvider } from './context/PostProvider'
 import { fetchMe as apiFetchMe, logout as apiLogout, saveAuthToStorage, clearAuthStorage } from "./api/client"
 
@@ -75,6 +72,7 @@ function App() {
 
         <Routes>
           <Route path='/' element={<Landing />} />
+          <Route path='/oauth/kakao' element={<kakaoCallback onAuthed={handleAuthed} />} />
           {/* 로그인 회원가입 */}
           <Route
             path='/admin/login'

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import api from '../api/client'
+import api, { BASE_URL } from '../api/client'
 import './AuthPanel.scss'
 
 const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, requiredRole }) => {
@@ -13,6 +13,10 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
     const navigate = useNavigate()
     const isAdminPage = requiredRole === 'admin'
     const title = mode === 'login' ? '📜관리자 인증' : '🔮서약 등록'
+
+    const handleKakaoLogin = () => {
+        window.location.href = `${BASE_URL}/api/auth/kakao`
+    }
 
     useEffect(() => {
         if (isAuthed) {
@@ -87,12 +91,12 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
                         <>
                             {mode === 'register' && (
                                 <div className="input-group display-name-input">
-                                    <label htmlFor="displayName">Your Name</label>
+                                    <label htmlFor="displayName">이름</label>
                                     <input
                                         type="text"
                                         id="displayName"
                                         name="displayName"
-                                        placeholder="Enter your name..."
+                                        placeholder="이름을 입력하시오"
                                         value={form.displayName}
                                         onChange={handleChange}
                                         required
@@ -101,24 +105,24 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
                             )}
 
                             <div className="input-group email-input">
-                                <label htmlFor="email">Incantation of Name (Email)</label>
+                                <label htmlFor="email">이메일</label>
                                 <input
                                     type="email"
                                     id="email"
                                     name="email"
-                                    placeholder="Enter your email..."
+                                    placeholder="이메일을 입력하시오"
                                     value={form.email}
                                     onChange={handleChange}
                                     required
                                 />
                             </div>
                             <div className="input-group password-input">
-                                <label htmlFor="password">Verbal Component (Password)</label>
+                                <label htmlFor="password">비밀번호</label>
                                 <input
                                     type="password"
                                     id="password"
                                     name="password"
-                                    placeholder="Enter your secret word..."
+                                    placeholder="비밀번호를 입력하시오"
                                     value={form.password}
                                     onChange={handleChange}
                                     required
@@ -149,6 +153,12 @@ const AuthPanel = ({ isAuthed, user, me, onFetchMe, onLogout, onAuthed, required
                     )}
                 </form>
 
+                <div className="social-login-area">
+                    <button type="button" className="btn-kakao" onClick={handleKakaoLogin}>
+                        <p>카카오 로그인</p>
+                        <span>카카오로 {mode === 'login' ? '로그인' : '시작하기'}</span>
+                    </button>
+                </div>
                 {!isAuthed && (
                     <div className="grimoire-messages">
                         {err && (

@@ -1,9 +1,15 @@
-import React from 'react'
-import { Edit, Trash2 } from 'lucide-react' // 🚨 아이콘 import (필요시)
+import React, { useState } from 'react'
+import { Edit, Trash2 } from 'lucide-react'
 
 // 🚨 1. (수정) props로 posts, onPostClick, onEdit, onDelete를 받습니다.
-const AdminPostsList = ({ posts = [], loading, onPostClick, onEdit, onDelete }) => {
-
+const AdminPostsList = ({ posts = [], loading, onPostClick, onEdit, onDelete, onStatusChange }) => {
+    const [openStatusMenu, setOpenStatusMenu] = useState(null)
+    const handleChangeStatus = (post, newStatus) => {
+        if (window.confirm(`'${post.title}'의 상태를 '${newStatus}'(으)로 변경하시겠습니까?`)) {
+            onStatusChange(post, newStatus); // 부모(AdminPosts)의 API 함수 호출
+        }
+        setOpenStatusMenu(null); // 메뉴 닫기
+    }
     // 🚨 2. (신규) 로딩 상태 표시
     if (loading) {
         return (
@@ -35,16 +41,26 @@ const AdminPostsList = ({ posts = [], loading, onPostClick, onEdit, onDelete }) 
                                 <td className="post-title" onClick={() => onPostClick(post)}>
                                     {post.title}
                                 </td>
-                                <td>
-                                    <span className={`status-badge status-${post.status || 'pending'}`}>
+                                <td className="status-cell">
+                                    <button
+                                        className={`btn-action status-badge status-${post.status || 'pending'}`}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            // 팝업 메뉴 토글
+                                            setOpenStatusMenu(openStatusMenu === post._id ? null : post._id);
+                                        }}
+                                    >
                                         {post.status || 'pending'}
-                                    </span>
+                                    </button>
+                                    {openStatusMenu === post._id && (
+                                        <div className="status-popover" onClick={(e) => e.stopPropagation()}>
+                                            <button onClick={() => handleChangeStatus(post, 'pending')} className="status-option status-pending">Pending</button>
+                                            <button onClick={() => handleChangeStatus(post, 'approved')} className="status-option status-approved">Approved</button>
+                                            <button onClick={() => handleChangeStatus(post, 'rejected')} className="status-option status-rejected">Rejected</button>
+                                            <button onClick={() => handleChangeStatus(post, 'hidden')} className="status-option status-hidden">Hidden</button>
+                                        </div>
+                                    )}
                                 </td>
-                                {
-                                    /* 🚨 (신규) '사용자 ID' 데이터(td) 추가 
-                                       (post.user 객체에 _id가 있거나, post.user가 ID 문자열 자체일 수 있음)
-                                    */
-                                }
                                 <td className="user-id">
                                     {typeof post.user === 'object' ? post.user?._id : post.user}
                                 </td>

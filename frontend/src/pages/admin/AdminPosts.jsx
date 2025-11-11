@@ -10,7 +10,6 @@ import './AdminDashboard.scss'
 import { getUserId } from '../../util/getUserId'
 
 const AdminPosts = () => {
-    // 🚨 6. (수정) items: 서버 원본 데이터, query: 필터링용 state
     const [items, setItems] = useState([]);
     const [query, setQuery] = useState({ q: "", user: "", status: "" });
     const [loading, setLoading] = useState(true)
@@ -19,21 +18,19 @@ const AdminPosts = () => {
     const [selectedPost, setSelectedPost] = useState(null)
     const [editingPost, setEditingPost] = useState(null)
 
-    // 🚨 7. (수정) loadPosts는 이제 query에 의존하지 않고, 전체 데이터를 1회만 로드
     const loadPosts = useCallback(async () => {
         setLoading(true)
         setError('')
         try {
-            // 🚨 서버에서 모든 데이터를 가져옴 (query 제거)
             const res = await fetchPosts()
-            setItems(res) // 🚨 items에 원본 저장
+            setItems(res)
         } catch (error) {
             console.error('게시글 불러오기 실패', error)
             setError('게시글을 불러오는데 실패했습니다.')
         } finally {
             setLoading(false)
         }
-    }, []) // 🚨 8. (수정) 의존성 배열 비움
+    }, [])
 
     useEffect(() => {
         loadPosts()
@@ -107,6 +104,16 @@ const AdminPosts = () => {
         }
     }
 
+    const handleStatusChange = async (postItem, newStatus) => {
+        try {
+            await fetchPost(postItem._id, { status: newStatus });
+            loadPosts();
+        } catch (error) {
+            console.error("상태 변경 실패:", error);
+            alert("상태 변경에 실패했습니다.");
+        }
+    };
+
     const handleAddClick = () => { // (이관)
         setEditingPost(null)
         setOpenUpload(true)
@@ -145,12 +152,12 @@ const AdminPosts = () => {
 
             {/* 🚨 (이관) 테이블 -> AdminPostsList 컴포넌트로 대체 */}
             <AdminPostsList
-                // 🚨 12. (수정) list -> filteredList 전달
                 posts={filteredList}
                 loading={loading}
                 onPostClick={handlePostClick}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                onStatusChange={handleStatusChange}
             />
 
             {/* 🚨 7. (이관) 모달 로직 */}
