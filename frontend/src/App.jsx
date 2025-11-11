@@ -6,11 +6,10 @@ import Landing from './pages/Landing'
 import Header from './components/Header'
 import ProtectRoute from './components/ProtectRoute'
 import UserDashboard from './pages/user/UserDashboard'
-import AdminDashboard from './pages/admin/adminDashboard'
+import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminLayout from './components/AdminLayout'
 import AdminPosts from './pages/admin/AdminPosts'
 import AdminUsers from './pages/admin/AdminUsers'
-import kakaoCallback from './pages/kakaoCallback'
 import { PostProvider } from './context/PostProvider'
 import { fetchMe as apiFetchMe, logout as apiLogout, saveAuthToStorage, clearAuthStorage } from "./api/client"
 
